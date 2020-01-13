@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+</head>
+<body>
+<a href="?lang=en">en</a>
+<a href="?lang=ru">ru</a>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="panel panel-default" style="margin-top:45px">
+                <div class="panel-heading">
+                    <h3 class="panel-title" th:text="#{title.registration}"></h3>
+                </div>
+
+                <div class="panel-body">
+                    <form th:action = "@{/registration}" method="post">
+                        <p th:if="${message}" class="alert alert-info" role="alert" th:text="#{message.exist.login }"></p>
+                        <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
+                        <div class="form-group">
+                            <label for="login" th:text="#{label.login}"></label>
+                            <input type="text" class="form-control" id="login" placeholder="Login"
+                                   name="login">
+                        </div>
+                        <div class="form-group">
+                            <label for="password" th:text="#{label.password}"></label>
+                            <input type="password" class="form-control" id="password" placeholder="Password"
+                                   name="password">
+                        </div>
+                        <button type="submit" class="btn btn-default" th:text="#{button.registration}"></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
