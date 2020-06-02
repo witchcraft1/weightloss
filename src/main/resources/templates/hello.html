@@ -27,6 +27,7 @@
 </div>
 <a th:if="${role == 'ROLE_ADMIN'}" href="/all_users"  th:text="#{label.users}" ></a>
 <a th:if="${role == 'ROLE_ADMIN'}" href="/dishes"  th:text="#{label.dishes}" ></a>
-<a href="/add_user_info" >Add info about yourself</a>
+<a href="/add_user_info" th:text="#{title.add.user-info}"></a>
+<a href="/select_dishes" th:text="#{title.add.dishes}"></a>
 </body>
 </html>

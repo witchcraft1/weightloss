@@ -26,12 +26,12 @@
                         <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
                         <div class="form-group">
                             <label th:text="#{label.login}" for="username"></label>
-                            <input type="text" class="form-control" id="username" placeholder="Username"
+                            <input type="text" class="form-control" id="username" th:placeholder="#{label.placeholder.username}"
                                    name="username">
                         </div>
                         <div class="form-group">
                             <label th:text="#{label.password}"  for="password"></label>
-                            <input type="password" class="form-control" id="password" placeholder="Password"
+                            <input type="password" class="form-control" id="password" th:placeholder="#{label.placeholder.password}"
                                    name="password">
                         </div>
                         <a href="/registration"  th:text="#{button.registration}" ></a>

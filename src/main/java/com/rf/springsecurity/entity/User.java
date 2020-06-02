@@ -49,10 +49,7 @@ public class User {
     @JoinTable(
             name = "users_dishes",
             joinColumns = @JoinColumn(name="user_id"),
-            inverseJoinColumns = {
-                    @JoinColumn(name = "dish_id"),
-                    @JoinColumn(name = "count")
-            }
+            inverseJoinColumns = @JoinColumn(name = "dish_id")
     )
     private List<Dish> dishes;
 

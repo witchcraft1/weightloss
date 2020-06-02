@@ -15,8 +15,9 @@
 <body>
 <a href="?lang=en">en</a>
 <a href="?lang=ru">ru</a>
+<a href="/" th:text="#{label.home}"></a>
 <div id = "all_users">
-    <h2 th:text="#{title.all.users}"></h2>
+    <h2 th:text="#{title.all.dishes}"></h2>
 </div>
 <div id = "content">
         <table class="table table-hover">
@@ -34,15 +35,15 @@
             <tbody>
 
             <tr th:each="dish: ${dishes}">
-                <td><span th:text="${dish.name}"> Id </span></td>
-                <td><span th:text="${dish.id}">Login </span></td>
-                <td><span th:text="${dish.protein}"> Password </span></td>
-                <td><span th:text="${dish.calories}"> Active </span></td>
-                <td><span th:text="${dish.fat}"> Roles </span></td>
-                <td><span th:text="${dish.carbs}"> Roles </span></td>
+                <td><span th:text="${dish.name}"> </span></td>
+                <td><span th:text="${dish.id}"> </span></td>
+                <td><span th:text="${dish.protein}"> </span></td>
+                <td><span th:text="${dish.calories}"> </span></td>
+                <td><span th:text="${dish.fat}">  </span></td>
+                <td><span th:text="${dish.carbs}">  </span></td>
                 <td>
                     <form th:action = "@{/dishes/${dish.id}/delete}" method="post">
-                        <button type="submit" class="btn btn-danger" onclick="this.disabled=true">Удалить</button>
+                        <button type="submit" class="btn btn-danger" th:text="#{label.button.delete}" onclick="this.disabled=true"></button>
                     </form>
                 </td>
             </tr>
@@ -52,7 +53,7 @@
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
                 <div class="panel panel-default" style="margin-top:45px">
-                    <div class="panel-heading">
+                    <div class="panel-heading" th:text="#{label.dish.add}">
                     </div>
 
                     <div class="panel-body">
@@ -60,31 +61,31 @@
                             <p th:if="${message}" class="alert alert-info" role="alert" th:text="'Dish already exists'"></p>
                             <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
                             <div class="form-group">
-                                <label for="name" th:text="'Name'"></label>
-                                <input type="text" class="form-control" id="name" placeholder="Dish name"
+                                <label for="name" th:text="#{label.dish.name}"></label>
+                                <input type="text" class="form-control" id="name" th:placeholder="#{label.dish.name}"
                                        name="name">
                             </div>
                             <div class="form-group">
-                                <label for="calories" th:text="'Calories'"></label>
-                                <input type="number" class="form-control" id="calories" placeholder="Calories"
+                                <label for="calories" th:text="#{label.dish.calories}"></label>
+                                <input type="number" class="form-control" id="calories" th:placeholder="#{label.dish.calories}"
                                        name="calories">
                             </div>
                             <div class="form-group">
-                                <label for="protein" th:text="'Protein'"></label>
-                                <input type="number" class="form-control" id="protein" placeholder="Proteins"
+                                <label for="protein" th:text="#{label.dish.protein}"></label>
+                                <input type="number" class="form-control" id="protein" th:placeholder="#{label.dish.protein}"
                                        name="protein">
                             </div>
                             <div class="form-group">
-                                <label for="fat" th:text="'Fat'"></label>
-                                <input type="number" class="form-control" id="fat" placeholder="Fat"
+                                <label for="fat" th:text="#{label.dish.fat}"></label>
+                                <input type="number" class="form-control" id="fat" th:placeholder="#{label.dish.fat}"
                                        name="fat">
                             </div>
                             <div class="form-group">
-                                <label for="carbs" th:text="'Calories'"></label>
-                                <input type="number" class="form-control" id="carbs" placeholder="Carbs"
+                                <label for="carbs" th:text="#{label.dish.carbs}"></label>
+                                <input type="number" class="form-control" id="carbs" th:placeholder="#{label.dish.carbs}"
                                        name="carbs">
                             </div>
-                            <button type="submit" class="btn btn-default" th:text="#{button.registration}"></button>
+                            <button type="submit" class="btn btn-default" th:text="#{button.add}"></button>
                         </form>
                     </div>
                 </div>
