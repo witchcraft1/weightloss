@@ -149,4 +149,14 @@ public class MainController {
         userService.saveUser(current_user);
         return "redirect:/select_dishes";
     }
+    @GetMapping("calculate_calories")
+    public String calculateColories(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+        User current_user = userService.getUserByUsername(user.getUsername());
+
+        model.addAttribute("calories", userService.calculateSumCalories(current_user));
+        return "calculate_calories";
+    }
+
 }

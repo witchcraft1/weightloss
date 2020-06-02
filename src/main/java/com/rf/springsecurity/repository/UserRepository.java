@@ -13,10 +13,12 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    @Query(value = "SELECT u from User u where u.login = :log  ")
+    @Query(value = "SELECT u from User u where u.login = :log  ")//TODO delete redundant Query
     User findByLogin(@Param("log")String login);
 
     Optional<User> findById(Long id);
+
+
 
     @Modifying
     @Query(value = "UPDATE public.users u set u.userInfo = :usr_info where users_id = :currnt_user",
