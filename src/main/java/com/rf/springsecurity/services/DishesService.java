@@ -34,6 +34,9 @@ public class DishesService {
     public void deleteDishById(Long id) throws Exception{
         dishesRepository.deleteById(id);
     }
+    public Dish findById(Long id){
+        return dishesRepository.findById(id).get();
+    }
 
 
 }

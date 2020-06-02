@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 
 @Data
@@ -17,7 +18,6 @@ import java.util.List;
 @Table( name="users",
         uniqueConstraints={@UniqueConstraint(columnNames={"login"})})
 public class User {
-
     @Id
     @GeneratedValue (strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false, unique = true)
@@ -35,15 +35,28 @@ public class User {
 
     private boolean active;
 
-    //@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    //@JoinColumn(name = "userInfoId", referencedColumnName = "id")
-   // @OneToOne(fetch = FetchType.LAZY)//!!!
-   // @JoinColumn(name = "info_id")//!!!
+   /* @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @JoinColumn(name = "userInfoId", referencedColumnName = "id")
+    @OneToOne(fetch = FetchType.LAZY)//!!!
+    @JoinColumn(name = "info_id")//!!!
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    private List<UserInfo> userInfo;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST)*/
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
+    private UserInfo userInfo;
 
-    public void addUserInfo(UserInfo userInfo){
+    @ManyToMany
+    @JoinTable(
+            name = "users_dishes",
+            joinColumns = @JoinColumn(name="user_id"),
+            inverseJoinColumns = {
+                    @JoinColumn(name = "dish_id"),
+                    @JoinColumn(name = "count")
+            }
+    )
+    private List<Dish> dishes;
+
+/*    public void addUserInfo(UserInfo userInfo){
         this.userInfo.add(userInfo);
-    }
+    }*/
 }

@@ -54,11 +54,19 @@ public class UserService implements UserDetailsService {
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         userRepository.save(user);
     }
+    public void saveUser(User user){
+        userRepository.save(user);
+    }
+    public User findById(Long id){
+        return userRepository.findById(id).get();
+    }
 
     public void updateUser(User user, UserInfo userInfo){
-        User user2 = getUserByUsername(user.getLogin());
+//        User user3 = userRepository.fl
+       /* User user2 = getUserByUsername(user.getLogin());
         userRepository.delete(user);
         user2.addUserInfo(userInfo);
-        userRepository.save(user2);
+        userRepository.save(user2);*/
+       userRepository.updateByUserAndUserInfo(user,userInfo);
     }
 }

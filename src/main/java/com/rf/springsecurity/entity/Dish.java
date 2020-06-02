@@ -3,6 +3,8 @@ package com.rf.springsecurity.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -35,4 +37,7 @@ public class Dish {
 
     @Column(nullable = false)
     private int protein;
+
+    @ManyToMany(mappedBy = "dishes")
+    private List<User> users;
 }

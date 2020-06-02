@@ -1,6 +1,7 @@
 package com.rf.springsecurity.services;
 
 import com.rf.springsecurity.entity.Dish;
+import com.rf.springsecurity.entity.Lifestyle;
 import com.rf.springsecurity.entity.User;
 import com.rf.springsecurity.entity.UserInfo;
 import com.rf.springsecurity.repository.UserInfoRepository;
@@ -33,7 +34,7 @@ public class UserInfoService {
         return userInfoRepository.findAllByUserAndActiveTrue(user);
     }
 
-    public void updateByUserSetActiveFalse(User user){
-        userInfoRepository.updateByUserAndActiveTrue(user);
+    public void updateUserInfo(Integer age, Integer height, Integer weight, Lifestyle lifestyle, User user){
+        userInfoRepository.updateUserInfo(age,height,weight,lifestyle,user);
     }
 }
