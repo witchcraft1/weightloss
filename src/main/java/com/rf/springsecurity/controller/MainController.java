@@ -3,6 +3,7 @@ package com.rf.springsecurity.controller;
 
 import com.rf.springsecurity.dto.UserDishDTO;
 import com.rf.springsecurity.entity.*;
+import com.rf.springsecurity.services.DishUserService;
 import com.rf.springsecurity.services.DishesService;
 import com.rf.springsecurity.services.UserInfoService;
 import com.rf.springsecurity.services.UserService;
@@ -15,9 +16,11 @@ import org.springframework.security.core.GrantedAuthority;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,12 +37,14 @@ public class MainController {
     private UserService userService;
     private DishesService dishesService;
     private UserInfoService userInfoService;
+    private DishUserService dishUserService;
 
     @Autowired
-    public MainController(UserService userService, DishesService dishesService, UserInfoService userInfoService) {
+    public MainController(UserService userService, DishesService dishesService, UserInfoService userInfoService, DishUserService dishUserService) {
         this.userService = userService;
         this.dishesService = dishesService;
         this.userInfoService = userInfoService;
+        this.dishUserService = dishUserService;
     }
 
     @RequestMapping("/")
@@ -138,6 +143,7 @@ public class MainController {
         return "select_dishes";
     }
 
+    @Transactional
     @PostMapping("select_dishes")
     public String selectDishes(@ModelAttribute("select_dish") UserDishDTO userDishDTO, Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -145,8 +151,9 @@ public class MainController {
         User current_user = userService.getUserByUsername(user.getUsername());
 
 
-        current_user.getDishes().add(dishesService.findById(userDishDTO.getDish_id()));
-        userService.saveUser(current_user);
+        dishUserService.saveDishUser(DishUser.builder().user(current_user).dish(dishesService.findById(userDishDTO.getDish_id())).count(1).localDate(LocalDate.now()).build());
+        /*current_user.addDish(dishesService.findById(userDishDTO.getDish_id()), 1);
+        userService.saveUser(current_user);*/
         return "redirect:/select_dishes";
     }
     @GetMapping("calculate_calories")

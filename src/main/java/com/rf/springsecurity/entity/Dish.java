@@ -1,8 +1,13 @@
 package com.rf.springsecurity.entity;
 
 import lombok.*;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.NaturalIdCache;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -10,18 +15,17 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString
-
-
 @Entity
+@EqualsAndHashCode
 @Table( name="dishes",
         uniqueConstraints={@UniqueConstraint(columnNames={"name"})})
-public class Dish {
+public class Dish  {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)//Sequence
     @Column(name = "id", nullable = false, unique = true)
     private Long id;
+
 
     @Column(unique = true, nullable = false)
     private String name;
@@ -39,5 +43,6 @@ public class Dish {
     private int protein;
 
     @ManyToMany(mappedBy = "dishes")
-    private List<User> users;
+//    @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL)//,orphanRemoval = true)
+    private List</*DishUser*/> users = new ArrayList<>();
 }
