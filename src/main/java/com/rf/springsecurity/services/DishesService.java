@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @Service
 public class DishesService {
@@ -31,12 +33,14 @@ public class DishesService {
         dishesRepository.save(dish);
     }
 
-    public void deleteDishById(Long id) throws Exception{
+    public void deleteDishById(Long id) {
         dishesRepository.deleteById(id);
     }
     public Dish findById(Long id){
         return dishesRepository.findById(id).get();
     }
-
+    public List<Dish> findAllByUser(User user){
+        return dishesRepository.findAllByUsers(user);
+    }
 
 }

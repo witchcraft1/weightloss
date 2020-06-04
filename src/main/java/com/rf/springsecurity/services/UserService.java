@@ -1,5 +1,6 @@
 package com.rf.springsecurity.services;
 
+import com.rf.springsecurity.constants.Data;
 import com.rf.springsecurity.entity.Dish;
 import com.rf.springsecurity.entity.Lifestyle;
 import com.rf.springsecurity.entity.User;
@@ -15,6 +16,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -79,13 +82,19 @@ public class UserService implements UserDetailsService {
        userRepository.updateByUserAndUserInfo(user,userInfo);
     }
 
-    public Integer calculateSumCalories(User user){
+    public List<Double> calculateSumCalories(User user){
         List<Dish> dishes = dishesRepository.findAllByUsers(user);
-        Lifestyle lifestyle = userInfoRepository.findByUserAndActiveTrue(user).getLifestyle();
-        //TODO винести ці числа в інше місце
-        int calories_inactive_per_day = 1500;
+        UserInfo userInfo = userInfoRepository.findByUserAndActiveTrue(user);
+        Lifestyle lifestyle = Lifestyle.INACTIVE;
+        if(userInfo!=null)lifestyle = userInfo.getLifestyle();
+        List<Double> values = new ArrayList<>();
         int sum = dishes.stream().mapToInt(Dish::getCalories).sum();
-
-        return lifestyle == Lifestyle.ACTIVE ? sum - calories_inactive_per_day*2 : sum - calories_inactive_per_day;
+        values.add((double) sum);
+        int calories_to_loose = lifestyle == Lifestyle.ACTIVE ? sum - Data.NON_ACTIVE_MAN_LOOSE_CALORIES *2 : sum - Data.NON_ACTIVE_MAN_LOOSE_CALORIES;
+        values.add((double)calories_to_loose);
+        values.add(1.*calories_to_loose/Data.CALORIES_PER_ONE_MINUTE_LOW_TEMP);
+        values.add(1.*calories_to_loose/Data.CALORIES_PER_ONE_MINUTE_MEDIUM_TEMP);
+        values.add(1.*calories_to_loose/Data.CALORIES_PER_ONE_MINUTE_HIGH_TEMP);
+        return values;
     }
 }

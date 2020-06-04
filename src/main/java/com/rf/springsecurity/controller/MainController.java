@@ -3,7 +3,6 @@ package com.rf.springsecurity.controller;
 
 import com.rf.springsecurity.dto.UserDishDTO;
 import com.rf.springsecurity.entity.*;
-import com.rf.springsecurity.services.DishUserService;
 import com.rf.springsecurity.services.DishesService;
 import com.rf.springsecurity.services.UserInfoService;
 import com.rf.springsecurity.services.UserService;
@@ -37,21 +36,19 @@ public class MainController {
     private UserService userService;
     private DishesService dishesService;
     private UserInfoService userInfoService;
-    private DishUserService dishUserService;
 
     @Autowired
-    public MainController(UserService userService, DishesService dishesService, UserInfoService userInfoService, DishUserService dishUserService) {
+    public MainController(UserService userService, DishesService dishesService, UserInfoService userInfoService ) {
         this.userService = userService;
         this.dishesService = dishesService;
         this.userInfoService = userInfoService;
-        this.dishUserService = dishUserService;
     }
 
     @RequestMapping("/")
     public String getMainPage(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        model.addAttribute("login", user.getUsername() + " " + user.getPassword());
+        model.addAttribute("login", user.getUsername());
         model.addAttribute("role", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(joining(",")));
         return "hello";
     }
@@ -75,18 +72,24 @@ public class MainController {
 
     @PostMapping("/dishes")
     public String addDish(Dish dish, Model model) {
-        try{
-            dishesService.saveNewDish(dish);
-        }catch (Exception ex){
-            log.info(dish.getName() + "dish already exists");
-            model.addAttribute("dishes", dishesService.getAllDishes().getDishes());
-            model.addAttribute("message", "dish already exists");
-            return "dishes";
-        }
+            try {
+                dishesService.saveNewDish(dish);
+            } catch (Exception ex) {
+                log.info(dish.getName() + "dish already exists");
+                model.addAttribute("dishes", dishesService.getAllDishes().getDishes());
+                model.addAttribute("message", "dish already exists");
+                return "dishes";
+            }
+
         return "redirect:/dishes";
     }
-    @RequestMapping(value = "/dishes/{id}/delete",method = RequestMethod.POST)
-    public String deleteSomeDish(@PathVariable("id") Long dishId, Model model){
+    @GetMapping(value = "/dishes/delete/{id}")
+    public String deleteSomeDish(@PathVariable("id")Long dishId, Model model){
+        Dish delete_dish = dishesService.findById(dishId);
+        for (User user : userService.getAllUsers().getUsers()) {
+            user.getDishes().remove(delete_dish);
+            userService.saveUser(user);
+        }
         try {
             dishesService.deleteDishById(dishId);
         }catch (Exception ex){
@@ -110,23 +113,14 @@ public class MainController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
         User current_user = userService.getUserByUsername(user.getUsername());
-
-//        current_user.addUserInfo(userInfo);
-
-//        userService.updateUser(current_user, userInfo);
         if(current_user.getUserInfo() == null) {
             userInfo.setActive(true);
             userInfo.setUser(current_user);
-            //userInfo.setId(userService.getUserByUsername(user.getUsername()).getId());
-//        userInfoService.findActiveInfoByUser(current_user).setActive(false);
-//        userInfoService.updateByUserSetActiveFalse(current_user);
             userInfoService.saveNewUserInfo(userInfo);
         }else{
             userInfoService.updateUserInfo(userInfo.getAge(),userInfo.getHeight(),userInfo.getWeight(),
                     userInfo.getLifestyle(), current_user);
         }
-       // userService.updateUser(userService.getUserByUsername(user.getUsername()), userInfo);
-
         return "redirect:/add_user_info";
     }
 
@@ -138,6 +132,11 @@ public class MainController {
 
     @GetMapping("select_dishes")
     public String selectDishesPage(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+        User current_user = userService.getUserByUsername(user.getUsername());
+
+        model.addAttribute("special_dishes", dishesService.findAllByUser(current_user));
         model.addAttribute("select_dish", new UserDishDTO());
         model.addAttribute("dishes", dishesService.getAllDishes().getDishes());
         return "select_dishes";
@@ -150,19 +149,40 @@ public class MainController {
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
         User current_user = userService.getUserByUsername(user.getUsername());
 
-
-        dishUserService.saveDishUser(DishUser.builder().user(current_user).dish(dishesService.findById(userDishDTO.getDish_id())).count(1).localDate(LocalDate.now()).build());
-        /*current_user.addDish(dishesService.findById(userDishDTO.getDish_id()), 1);
-        userService.saveUser(current_user);*/
+        Dish dish = dishesService.findById(userDishDTO.getDish_id());
+        if(current_user.getDishes().contains(dish))
+            return "redirect:/select_dishes";
+        current_user.getDishes().add(dish);
+        userService.saveUser(current_user);
         return "redirect:/select_dishes";
     }
+    @GetMapping(value = "/select_dishes/delete/{id}")
+    public String deleteSomeSelectedDish(@PathVariable("id") Long dish_id, Model model){
+        Dish delete_dish = dishesService.findById(dish_id);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+        User current_user = userService.getUserByUsername(user.getUsername());
+        current_user.getDishes().remove(delete_dish);
+        userService.saveUser(current_user);
+
+        return "redirect:/select_dishes";
+    }
+
     @GetMapping("calculate_calories")
     public String calculateColories(Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
         User current_user = userService.getUserByUsername(user.getUsername());
 
-        model.addAttribute("calories", userService.calculateSumCalories(current_user));
+        List<Double> values = userService.calculateSumCalories(current_user);
+        model.addAttribute("all_calories", values.get(0));
+        if(values.get(1) > 0) {
+            model.addAttribute("calories_to_loose", values.get(1));
+            model.addAttribute("min_walk_low_temp", values.get(2));
+            model.addAttribute("min_walk_medium_temp", values.get(3));
+            model.addAttribute("min_walk_high_temp", values.get(4));
+        }else
+            model.addAttribute("calories_to_gain", -values.get(1));
         return "calculate_calories";
     }
 

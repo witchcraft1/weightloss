@@ -54,14 +54,14 @@
 
                     </div>
                     <div class="panel-body">
-
+                    <div th:text="#{label.select.dishes}"></div>
                         <form th:action = "@{/select_dishes}" th:object="${select_dish}" method="post">
                             <!--            <p th:if="${message}" class="alert alert-info" role="alert" th:text="'Dish already exists'"></p>-->
 <!--                            <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">-->
 
                             <div class="form-group">
                                 <select id="user_dish" th:field="*{dish_id}">
-                                    <option value="">Select dishes</option>
+<!--                                    <option value="">Select dishes</option>-->
                                     <option th:each="dish: ${dishes}"  th:value="${dish.id}"  th:text="${dish.name + dish.id}"></option>
                                 </select>
                             </div>
@@ -72,7 +72,21 @@
             </div>
         </div>
     </div>
-
+    <div>
+        <h2 th:text="#{title.selected.dishes}"></h2>
+    </div>
+    <table class="table table-hover">
+        <tbody>
+        <tr th:each="dish: ${special_dishes}">
+            <td><span th:text="${dish.name}"> </span></td>
+            <td><span th:text="${dish.protein}">  </span></td>
+            <td><span th:text="${dish.calories}"> </span></td>
+            <td><span th:text="${dish.fat}">  </span></td>
+            <td><span th:text="${dish.carbs}">  </span></td>
+            <td><a th:href="@{/select_dishes/delete/{id}(id=${dish.id})}"  > Delete </a></td>
+        </tr>
+        </tbody>
+    </table>
 
 
 

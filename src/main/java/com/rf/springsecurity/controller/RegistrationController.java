@@ -32,11 +32,10 @@ public class RegistrationController {
     @PostMapping("/registration")
     public String addUser(User user, Model model) {
         user.setActive(true);
-        user.setRoles(Role.ROLE_ADMIN);
+        user.setRoles(Role.ROLE_USER);
         try{
             userService.saveNewUser(user);
             userInfoService.saveNewUserInfo(UserInfo.builder().user(user).active(true).build());
-            //userInfoService.saveNewUserInfo(new UserInfo().setId());
         }catch (Exception ex){
             log.info(user.getLogin() + " login is already exist");
             model.addAttribute("message", "login is already exist");

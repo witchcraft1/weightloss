@@ -55,22 +55,22 @@
                             <div class="form-group">
                                 <label for="age" th:text="#{label.user.age}"></label>
                                 <input type="number" class="form-control" id="age" th:placeholder="#{label.user.age}"
-                                       name="age">
+                                       name="age" required min="0" max="120">
                             </div>
                             <div class="form-group">
                                 <label for="height" th:text="#{label.user.height}"></label>
                                 <input type="number" class="form-control" id="height" th:placeholder="#{label.user.height}"
-                                       name="height">
+                                       name="height" required min="0">
                             </div>
                             <div class="form-group">
                                 <label for="weight" th:text="#{label.user.weight}"></label>
                                 <input type="number" class="form-control" id="weight" th:placeholder="#{label.user.weight}"
-                                       name="weight">
+                                       name="weight" required min="0">
                             </div>
                             <div class="form-group">
                                 <label for="lifestyle" th:text="#{label.user.lifestyle}"></label>
                                 <input type="text" class="form-control" id="lifestyle" th:placeholder="#{label.user.lifestyle}"
-                                       name="lifestyle">
+                                       name="lifestyle" required>
                             </div>
 
                             <button type="submit" class="btn btn-default" th:text="#{button.add}"></button>

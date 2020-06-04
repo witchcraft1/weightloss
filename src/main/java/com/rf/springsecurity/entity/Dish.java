@@ -20,9 +20,8 @@ import java.util.Set;
 @Table( name="dishes",
         uniqueConstraints={@UniqueConstraint(columnNames={"name"})})
 public class Dish  {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)//Sequence
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)//Sequence
     @Column(name = "id", nullable = false, unique = true)
     private Long id;
 
@@ -44,5 +43,5 @@ public class Dish  {
 
     @ManyToMany(mappedBy = "dishes")
 //    @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL)//,orphanRemoval = true)
-    private List</*DishUser*/> users = new ArrayList<>();
+    private List</*DishUser*/User> users;
 }
