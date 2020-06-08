@@ -41,7 +41,8 @@ public class Dish  {
     @Column(nullable = false)
     private int protein;
 
-    @ManyToMany(mappedBy = "dishes")
-//    @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL)//,orphanRemoval = true)
-    private List</*DishUser*/User> users;
+    /*@ManyToMany(mappedBy = "dishes")
+    private List<*//*DishUser*//*User> users;*/
+    @OneToMany(mappedBy = "dish")
+    private List<UserDish> userDishes;
 }

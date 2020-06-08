@@ -1,6 +1,6 @@
 package com.rf.springsecurity.dto;
 
-import com.rf.springsecurity.entity.User;
+import com.rf.springsecurity.entity.MyUser;
 
 import lombok.*;
 
@@ -13,5 +13,5 @@ import java.util.List;
 @Builder
 @ToString
 public class UsersDTO {
-    private List<User> users;
+    private List<MyUser> users;
 }

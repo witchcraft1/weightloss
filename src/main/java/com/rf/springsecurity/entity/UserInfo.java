@@ -17,13 +17,8 @@ public class UserInfo {
     @Column(name = "id_info", nullable = false, unique = true)
     private Long id;
 
-  //  @OneToOne(fetch = FetchType.LAZY, mappedBy = "userInfo") //!!!!
-   // @MapsId//tells Hibernate to use the id column of address as both primary key and foreign key
-   /* @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "users_id")*/
-//   @OneToOne(cascade = CascadeType.ALL)
     @OneToOne(fetch = FetchType.LAZY)
-    private User user;
+    private MyUser user;
 
     @Column
     private int age;

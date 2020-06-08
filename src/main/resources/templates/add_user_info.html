@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 
     <meta charset="UTF-8">
@@ -40,7 +40,7 @@
         </tr>
         </tbody>
     </table>
-    <a href="/add_user_info/select_recent">Select recent data</a>
+<!--    <a href="/add_user_info/select_recent">Select recent data</a>-->
     <div class="container">
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
@@ -69,8 +69,12 @@
                             </div>
                             <div class="form-group">
                                 <label for="lifestyle" th:text="#{label.user.lifestyle}"></label>
-                                <input type="text" class="form-control" id="lifestyle" th:placeholder="#{label.user.lifestyle}"
-                                       name="lifestyle" required>
+                                <select class="form_control" id="lifestyle"  name="lifestyle" required>
+                                    <option th:each="lifestyle: ${lifestyles}" th:text="${lifestyle}"></option>
+                                </select>
+
+<!--                                <input type="text" class="form-control" id="lifestyle" th:placeholder="#{label.user.lifestyle}"-->
+<!--                                       name="lifestyle" required>-->
                             </div>
 
                             <button type="submit" class="btn btn-default" th:text="#{button.add}"></button>
@@ -82,9 +86,4 @@
     </div>
 </div>
 </body>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js">
-    $.post( "ajax/test.html", function( data ) {
-        $( ".result" ).html( data );
-    });
-</script>
 </html>

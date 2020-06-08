@@ -1,7 +1,7 @@
 package com.rf.springsecurity.controller;
 
 import com.rf.springsecurity.entity.Role;
-import com.rf.springsecurity.entity.User;
+import com.rf.springsecurity.entity.MyUser;
 import com.rf.springsecurity.entity.UserInfo;
 import com.rf.springsecurity.services.UserInfoService;
 import com.rf.springsecurity.services.UserService;
@@ -30,7 +30,7 @@ public class RegistrationController {
     }
 
     @PostMapping("/registration")
-    public String addUser(User user, Model model) {
+    public String addUser(MyUser user, Model model) {
         user.setActive(true);
         user.setRoles(Role.ROLE_USER);
         try{

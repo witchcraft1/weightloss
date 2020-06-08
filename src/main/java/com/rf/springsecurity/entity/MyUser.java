@@ -17,7 +17,7 @@ import java.util.Set;
 @Entity
 @Table( name="users",
         uniqueConstraints={@UniqueConstraint(columnNames={"login"})})
-public class User  {
+public class MyUser {
     @Id
     @GeneratedValue (strategy = GenerationType.SEQUENCE)//SEQUENCE)
     @Column(name = "id", nullable = false, unique = true)
@@ -45,24 +45,15 @@ public class User  {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
     private UserInfo userInfo;
 
-    @ManyToMany
+   /* @ManyToMany
     @JoinTable(
             name = "users_dishes",
             joinColumns = @JoinColumn(name="user_id"),
             inverseJoinColumns = @JoinColumn(name = "dish_id")
     )
-    private List<Dish> dishes;
+    private List<Dish> dishes;*/
 
-   /* @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)//, orphanRemoval = true)
-    private List<DishUser> dishUsers = new ArrayList<>();
+   @OneToMany(mappedBy = "user")
+    private List<UserDish> userDishes;
 
-    public void addDish(Dish dish, Integer count){
-        DishUser dishUser = DishUser.builder().user(this).dish(dish).count(count).build();
-        dishUsers.add(dishUser);
-        dish.getUsers().add(dishUser);
-    }*/
-
-/*    public void addUserInfo(UserInfo userInfo){
-        this.userInfo.add(userInfo);
-    }*/
 }

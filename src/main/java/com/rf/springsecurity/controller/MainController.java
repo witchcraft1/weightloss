@@ -4,6 +4,7 @@ package com.rf.springsecurity.controller;
 import com.rf.springsecurity.dto.UserDishDTO;
 import com.rf.springsecurity.entity.*;
 import com.rf.springsecurity.services.DishesService;
+import com.rf.springsecurity.services.UserDishService;
 import com.rf.springsecurity.services.UserInfoService;
 import com.rf.springsecurity.services.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +13,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +23,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.joining;
@@ -36,18 +41,20 @@ public class MainController {
     private UserService userService;
     private DishesService dishesService;
     private UserInfoService userInfoService;
+    private UserDishService userDishService;
 
     @Autowired
-    public MainController(UserService userService, DishesService dishesService, UserInfoService userInfoService ) {
+    public MainController(UserService userService, DishesService dishesService, UserInfoService userInfoService, UserDishService userDishService ) {
         this.userService = userService;
         this.dishesService = dishesService;
         this.userInfoService = userInfoService;
+        this.userDishService = userDishService;
     }
 
     @RequestMapping("/")
-    public String getMainPage(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+    public String getMainPage(@AuthenticationPrincipal User user, Model model) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        User user = (User) authentication.getPrincipal();
         model.addAttribute("login", user.getUsername());
         model.addAttribute("role", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(joining(",")));
         return "hello";
@@ -86,10 +93,8 @@ public class MainController {
     @GetMapping(value = "/dishes/delete/{id}")
     public String deleteSomeDish(@PathVariable("id")Long dishId, Model model){
         Dish delete_dish = dishesService.findById(dishId);
-        for (User user : userService.getAllUsers().getUsers()) {
-            user.getDishes().remove(delete_dish);
-            userService.saveUser(user);
-        }
+        userDishService.deleteAllByDish(delete_dish);
+
         try {
             dishesService.deleteDishById(dishId);
         }catch (Exception ex){
@@ -99,20 +104,19 @@ public class MainController {
          return "redirect:/dishes";
     }
     @GetMapping("add_user_info")
-    public String showUserInfo(Model model){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        User current_user = userService.getUserByUsername(user.getUsername());
+    public String showUserInfo(@AuthenticationPrincipal User user, Model model){
+        MyUser current_user = userService.getUserByUsername(user.getUsername());
+
         UserInfo userInfo = userInfoService.findActiveInfoByUser(current_user);
+
+        model.addAttribute("lifestyles", Lifestyle.values());
         model.addAttribute("current_user", userInfo);
         return "add_user_info";
     }
 
     @PostMapping("add_user_info")
-    public String addUserInfo(UserInfo userInfo, Model model){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        User current_user = userService.getUserByUsername(user.getUsername());
+    public String addUserInfo(@AuthenticationPrincipal User user,UserInfo userInfo, Model model){
+        MyUser current_user = userService.getUserByUsername(user.getUsername());
         if(current_user.getUserInfo() == null) {
             userInfo.setActive(true);
             userInfo.setUser(current_user);
@@ -131,12 +135,16 @@ public class MainController {
     }
 
     @GetMapping("select_dishes")
-    public String selectDishesPage(Model model){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        User current_user = userService.getUserByUsername(user.getUsername());
+    public String selectDishesPage(@AuthenticationPrincipal User user,Model model){
+        MyUser current_user = userService.getUserByUsername(user.getUsername());
+        List<UserDish> userDishes = userDishService.findAllByUser(current_user);
 
-        model.addAttribute("special_dishes", dishesService.findAllByUser(current_user));
+        // можно обойтись без этой строчки кода, если в select_dishes.html
+        // принимать объекты класса UserDish, а не User
+        List<Dish> dishes = userDishes.stream().map(UserDish::getDish).collect(Collectors.toList());
+
+        model.addAttribute("special_dishes", dishes);
+
         model.addAttribute("select_dish", new UserDishDTO());
         model.addAttribute("dishes", dishesService.getAllDishes().getDishes());
         return "select_dishes";
@@ -144,35 +152,48 @@ public class MainController {
 
     @Transactional
     @PostMapping("select_dishes")
-    public String selectDishes(@ModelAttribute("select_dish") UserDishDTO userDishDTO, Model model){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        User current_user = userService.getUserByUsername(user.getUsername());
+    public String selectDishes(@AuthenticationPrincipal User user,@ModelAttribute("select_dish") UserDishDTO userDishDTO, Model model){
+        MyUser current_user = userService.getUserByUsername(user.getUsername());
 
         Dish dish = dishesService.findById(userDishDTO.getDish_id());
-        if(current_user.getDishes().contains(dish))
+
+        UserDish userDish = userDishService.findByDishAndUser(dish,current_user);
+        /*if(userDish != null){
             return "redirect:/select_dishes";
-        current_user.getDishes().add(dish);
-        userService.saveUser(current_user);
+        }else{*/
+            userDishService.save(UserDish.builder()
+                    .dish(dish)
+                    .user(current_user)
+                    .grams(userDishDTO.getGrams())
+                    .date(LocalDate.now())
+                    .build());
+//        }
+
         return "redirect:/select_dishes";
     }
     @GetMapping(value = "/select_dishes/delete/{id}")
-    public String deleteSomeSelectedDish(@PathVariable("id") Long dish_id, Model model){
+    public String deleteSomeSelectedDish(@AuthenticationPrincipal User user, @PathVariable("id") Long dish_id, Model model){
         Dish delete_dish = dishesService.findById(dish_id);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        User current_user = userService.getUserByUsername(user.getUsername());
-        current_user.getDishes().remove(delete_dish);
-        userService.saveUser(current_user);
-
+        MyUser current_user = userService.getUserByUsername(user.getUsername());
+        userDishService.deleteByDishAndUser(delete_dish, current_user);
         return "redirect:/select_dishes";
     }
 
+    @GetMapping(value = "/select_dishes/history")
+    public String showHistory(@AuthenticationPrincipal User user, Model model){
+//        userDishService.findAllByUser();
+        List<UserDish> userDishes = userDishService.findAllByUser(userService.getUserByUsername(user.getUsername()));
+
+        Map<String, List<UserDish>> map = userDishes.stream().collect(Collectors.groupingBy(userDish -> userDish.getDate().toString()));
+        model.addAttribute("map", map);
+
+
+        return "dishes_history";
+    }
+
     @GetMapping("calculate_calories")
-    public String calculateColories(Model model){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        User current_user = userService.getUserByUsername(user.getUsername());
+    public String calculateCalories(@AuthenticationPrincipal User user,Model model){
+        MyUser current_user = userService.getUserByUsername(user.getUsername());
 
         List<Double> values = userService.calculateSumCalories(current_user);
         model.addAttribute("all_calories", values.get(0));
