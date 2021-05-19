@@ -1,45 +1,54 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
-          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <title>Users</title>
+    <link th:href="@{public/css/style.css}" th:rel="stylesheet">
 </head>
 <body>
-<a href="?lang=en">en</a>
-<a href="?lang=ru">ru</a>
-<a href="/" th:text="#{label.home}"></a>
-<div id = "all_users">
-    <h2 th:text="#{title.all.dishes}"></h2>
-</div>
-<div id = "content">
+<div class="bg" style="background-image: url('public/images/cool-bg3.jpg')">
+    <div th:replace="/fragments/navbar"></div>
 
-    <table class="table table-hover" >
-        <thead>
-            <tr>
-                            <th th:text="#{label.dish.name}"></th>
-                            <th th:text="#{label.select.grams}"></th>
-                            <th th:text="#{label.dish.calories}"></th>
-            </tr>
-        </thead>
-        <tbody>
-            <div th:each="entry:${map}">
-                <tr><td  th:text="${entry.getKey()}"></td></tr>
-                <div th:each="dishUser:${entry.getValue()}" >
-                    <tr>
-                        <td><span th:text="${dishUser.getDish().getName()}"> </span></td>
-                        <!--                <td><span th:text="${entry.getValue()}"> </span></td>-->
-                        <td><span th:text="${dishUser.getGrams()}"></span></td>
-                        <td><span th:text="${dishUser.getDish().getCalories()}"></span></td>
+    <div id = "all_users">
+        <h2 class="text-danger" th:text="#{title.all.dishes}"></h2>
+    </div>
+    <div id = "content">
+
+        <table class="table table-hover text-white" >
+            <thead>
+                <tr>
+                    <th th:text="#{label.dish.name}"></th>
+                    <th th:text="#{label.select.grams}"></th>
+                    <th th:text="#{label.dish.calories}"></th>
+                </tr>
+            </thead>
+        </table>
+        <table th:each="entry:${map}" class="table table-hover text-white">
+            <caption>
+<!--                <tr>-->
+<!--                    <td></td>-->
+                <p3><b class="text-primary" th:text="${entry.getKey()}"></b></p3>
+<!--                    <td></td>-->
+<!--                </tr>-->
+            </caption>
+<!--            <tbody>-->
+<!--                <div th:each="entry:${map}">-->
+<!--                <tr><td><p3><b th:text="${entry.getKey()}"></b></p3></td></tr>-->
+<!--                <div th:each="dishUser:${entry.getValue()}" >-->
+                    <tr th:each="dishUser:${entry.getValue()}">
+                        <td><em class="text-success" th:text="${dishUser.getDish().getName()}"> </em></td>
+                            <!--                <td><span th:text="${entry.getValue()}"> </span></td>-->
+                        <td><b><span class="text-white" th:text="${dishUser.getGrams()}"></span></b></td>
+                        <td><b><span class="text-white" th:text="${dishUser.getDish().getCalories()}"></span></b></td>
                     </tr>
-                </div>
-            </div>
-        </tbody>
-    </table>
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </tbody>-->
+        </table>
+    </div>
 </div>
 </body>
 

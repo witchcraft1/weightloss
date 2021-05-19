@@ -4,31 +4,29 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
-          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link th:href="@{public/css/style.css}" th:rel="stylesheet">
 </head>
 <body>
 
-<a href="?lang=en">en</a>
-<a href="?lang=ru">ru</a>
-<a href="/logout" th:text="#{title.logout}"></a>
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h1 th:text="#{title.hello.world}"> </h1>
-            <h2 th:text="#{text.logged.with}"></h2>
-            <h3  th:text="${login}"></h3>
-            <h4  th:text="${role}"></h4>
+    <div class="bg" style="background-image: url('public/images/road.jpg')">
+        <div th:replace="/fragments/navbar"></div>
+<!--        <div th:replace="/fragments/header"></div>-->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="blue_" th:text="#{title.hello.world}"> </h1>
+                    <h1 class="yellow" th:text="#{text.logged.with}"></h1>
+                    <h2 class="pink-red" th:text="${login}"></h2>
+                    <h2 class="pink-red" th:text="${role}"></h2>
+                </div>
+            </div>
         </div>
+        <a th:if="${role == 'ROLE_ADMIN'}" href="/all_users"  th:text="#{label.users}" ></a>
+<!--        <a  href="/dishes"  th:text="#{label.dishes}" ></a> &lt;!&ndash; th:if="${role == 'ROLE_ADMIN'}" &ndash;&gt;-->
+<!--        <a href="/add_user_info" th:text="#{title.add.user-info}"></a>-->
+<!--        <a href="/select_dishes" th:text="#{title.add.dishes}"></a>-->
     </div>
-</div>
-<a th:if="${role == 'ROLE_ADMIN'}" href="/all_users"  th:text="#{label.users}" ></a>
-<a th:if="${role == 'ROLE_ADMIN'}" href="/dishes"  th:text="#{label.dishes}" ></a>
-<a href="/add_user_info" th:text="#{title.add.user-info}"></a>
-<a href="/select_dishes" th:text="#{title.add.dishes}"></a>
 </body>
 </html>

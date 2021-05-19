@@ -11,14 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-@Data
 @AllArgsConstructor
-@NoArgsConstructor
+@Data
 @Builder
 @Entity
-@EqualsAndHashCode
-@Table( name="dishes",
-        uniqueConstraints={@UniqueConstraint(columnNames={"name"})})
+@Table( name="dishes")
+       // uniqueConstraints={@UniqueConstraint(columnNames={"name"})})
 public class Dish  {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)//Sequence
@@ -26,7 +24,7 @@ public class Dish  {
     private Long id;
 
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false) //unique = true
     private String name;
 
     @Column(nullable = false)
@@ -45,4 +43,8 @@ public class Dish  {
     private List<*//*DishUser*//*User> users;*/
     @OneToMany(mappedBy = "dish")
     private List<UserDish> userDishes;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    //@Column(nullable = true)
+    private MyUser user;
 }

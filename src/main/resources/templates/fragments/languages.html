@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg"  th:fragment="navbar">
+    <div class="collapse navbar-collapse" >
+        <div class="form-inline my-2 my-lg-0">
+            <a  href="?lang=en" style="margin-right: 5px;">
+                <img src="../public/images/usa-flag.jpg" width="30" height="20" alt="" style="border-radius: 3px;">
+            </a>
+            <a  href="?lang=ru"  style="margin-right: 5px;">
+                <img src="../public/images/russia-flag.jpg" width="30" height="20" alt="" style="border-radius: 3px;">
+            </a>
+            <a  href="?lang=ua"  style="margin-right: 35px;">
+                <img src="../public/images/ukraine-flag.jpg" width="30" height="20" alt="" style="border-radius: 3px;">
+            </a>
+        </div>
+    </div>
+</nav>
+</body>
+</html>

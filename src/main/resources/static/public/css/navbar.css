@@ -1,0 +1,7 @@
+nav ul li:hover{
+    opacity: 0.6;
+    background-color: rgba(31, 31, 31, 0.7);
+}
+nav div, nav div ul, nav div ul li{
+    height: 100%;
+}

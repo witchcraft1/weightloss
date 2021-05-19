@@ -38,7 +38,7 @@ public class RegistrationController {
             userInfoService.saveNewUserInfo(UserInfo.builder().user(user).active(true).build());
         }catch (Exception ex){
             log.info(user.getLogin() + " login is already exist");
-            model.addAttribute("message", "login is already exist");
+            model.addAttribute("message", "lon is already exist");
             return "registration";
         }
         return "redirect:/login";

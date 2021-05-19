@@ -4,24 +4,20 @@
 <head>
 
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
-          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <title>Users</title>
-<!--    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>-->
+    <link th:href="@{public/css/style.css}" th:rel="stylesheet">
 </head>
 <body>
-<a href="?lang=en">en</a>
-<a href="?lang=ru">ru</a>
-<a href="/" th:text="#{label.home}"></a>
+<div class="bg" style="background-image: url('public/images/cool-bg1.jpg')">
+<div th:replace="/fragments/navbar"></div>
 <div id = "all_users">
     <h2 th:text="#{title.all.dishes}"></h2>
 </div>
-<div id = "content">
-        <table class="table table-hover">
-            <thead>
+<div id = "content" class="text-white">
+    <table class="table table-hover">
+        <thead>
             <tr>
                 <th th:text="#{label.dish.name}"></th>
                 <th th:text="#{label.dish.id}"></th>
@@ -30,11 +26,11 @@
                 <th th:text="#{label.dish.fat}"></th>
                 <th th:text="#{label.dish.carbs}"></th>
             </tr>
-            </thead>
+        </thead>
 
-            <tbody>
+        <tbody>
 
-                <tr th:each="dish: ${dishes}">
+            <tr th:each="dish: ${dishes}">
                     <td><span th:text="${dish.name}"> </span></td>
                     <td><span th:text="${dish.id}"> </span></td>
                     <td><span th:text="${dish.protein}"> </span></td>
@@ -42,15 +38,47 @@
                     <td><span th:text="${dish.fat}">  </span></td>
                     <td><span th:text="${dish.carbs}">  </span></td>
                     <td>
-                       <a th:href="@{/dishes/delete/{id}(id=${dish.id})}"  > Delete </a>
+                       <a th:if="${role.equals('ROLE_ADMIN')}" th:href="@{/dishes/delete/{id}(id=${dish.id})}"  > Delete </a>
                         <!--                    <form th:action = "@{/dishes/${dish.id}/delete}" th:object="${dish_dto}" method="post">-->
 <!--                            <input type="hidden" th:field="${dish_dto.dish_id}">Delete</input>-->
 <!--                            <button type="submit"  th:value="${dish.id}" class="btn btn-danger" th:text="#{label.button.delete}" ></button>-->
                     </td>
-                </tr>
+            </tr>
+        </tbody>
+    </table>
+    <div id = "special_dishes">
+        <h2 th:text="#{title.special.dishes}"></h2>
+    </div>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th th:text="#{label.dish.name}"></th>
+            <th th:text="#{label.dish.id}"></th>
+            <th th:text="#{label.dish.protein}"></th>
+            <th th:text="#{label.dish.calories}"></th>
+            <th th:text="#{label.dish.fat}"></th>
+            <th th:text="#{label.dish.carbs}"></th>
+        </tr>
+        </thead>
+        <tbody>
 
-            </tbody>
-        </table>
+        <tr th:if="${special_dishes != null}" th:each="dish: ${special_dishes}">
+            <td><span th:text="${dish.name}"> </span></td>
+            <td><span th:text="${dish.id}"> </span></td>
+            <td><span th:text="${dish.protein}"> </span></td>
+            <td><span th:text="${dish.calories}"> </span></td>
+            <td><span th:text="${dish.fat}">  </span></td>
+            <td><span th:text="${dish.carbs}">  </span></td>
+            <td>
+                <a th:href="@{/dishes/delete/{id}(id=${dish.id})}"  > Delete </a>
+                <!--                    <form th:action = "@{/dishes/${dish.id}/delete}" th:object="${dish_dto}" method="post">-->
+                <!--                            <input type="hidden" th:field="${dish_dto.dish_id}">Delete</input>-->
+                <!--                            <button type="submit"  th:value="${dish.id}" class="btn btn-danger" th:text="#{label.button.delete}" ></button>-->
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
     <div class="container">
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
@@ -59,7 +87,7 @@
                     </div>
 
                     <div class="panel-body">
-                        <form th:action = "@{/dishes}" method="post">
+                        <form th:action = "@{/dishes}" th:object="${checkBox}" method="post">
                             <p th:if="${message}" class="alert alert-info" role="alert" th:text="'Dish already exists'"></p>
                             <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden" required>
                             <div class="form-group">
@@ -87,7 +115,11 @@
                                 <input type="number" class="form-control" id="carbs" th:placeholder="#{label.dish.carbs}"
                                        name="carbs" required>
                             </div>
-                            <button type="submit" class="btn btn-default" th:text="#{button.add}"></button>
+                            <div th:if="${role.equals('ROLE_ADMIN')}" class="form-group">
+                                <label for="checkbox" th:text="#{label.local.dish}"></label>
+                                <input type="checkbox" id="checkbox" th:field="*{boolValue}" name="chBox">
+                            </div>
+                            <button type="submit" class="btn btn-outline-warning" th:text="#{button.add}"></button>
                         </form>
                     </div>
                 </div>
@@ -95,10 +127,7 @@
         </div>
     </div>
 </div>
+</div>
 </body>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js">
-    $.post( "ajax/test.html", function( data ) {
-        $( ".result" ).html( data );
-    });
-</script>
+
 </html>

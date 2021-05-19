@@ -31,6 +31,7 @@ public class MyUser {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+//    @ManyToOne
     private Role roles;
 
     private boolean active;
@@ -56,4 +57,6 @@ public class MyUser {
    @OneToMany(mappedBy = "user")
     private List<UserDish> userDishes;
 
+   @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<Dish> special_dishes;
 }

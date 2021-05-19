@@ -1,6 +1,7 @@
 package com.rf.springsecurity.controller;
 
 
+import com.rf.springsecurity.dto.BooleanDTO;
 import com.rf.springsecurity.dto.UserDishDTO;
 import com.rf.springsecurity.entity.*;
 import com.rf.springsecurity.services.DishesService;
@@ -22,10 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.joining;
@@ -52,7 +52,7 @@ public class MainController {
     }
 
     @RequestMapping("/")
-    public String getMainPage(@AuthenticationPrincipal User user, Model model) {
+    public String getMainPage(@AuthenticationPrincipal User user, Model model/*, Principal p*/) {
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //        User user = (User) authentication.getPrincipal();
         model.addAttribute("login", user.getUsername());
@@ -71,22 +71,45 @@ public class MainController {
     }
 
     @GetMapping("/dishes")
-    @PreAuthorize("hasRole('ADMIN')")
-    public String getAllDishes(Model model){
-        model.addAttribute("dishes", dishesService.getAllDishes().getDishes());
+//    @PreAuthorize("hasRole('ADMIN')")
+    public String getAllDishes(@AuthenticationPrincipal User user, Model model){
+        model.addAttribute("dishes", dishesService.findAllWhereUserIsNull());
+        model.addAttribute("special_dishes", dishesService.findAllByUser(userService.getUserByUsername(user.getUsername())));
+        model.addAttribute("role", userService.getUserByUsername(user.getUsername()).getRoles().getAuthority());
+        model.addAttribute("checkBox", new BooleanDTO());
         return "dishes";
     }
 
     @PostMapping("/dishes")
-    public String addDish(Dish dish, Model model) {
-            try {
-                dishesService.saveNewDish(dish);
-            } catch (Exception ex) {
-                log.info(dish.getName() + "dish already exists");
-                model.addAttribute("dishes", dishesService.getAllDishes().getDishes());
-                model.addAttribute("message", "dish already exists");
-                return "dishes";
-            }
+    public String addDish(@AuthenticationPrincipal User user,Dish dish, @ModelAttribute("check-box")BooleanDTO booleanDTO, Model model) {
+        if(dishesService.existsDishByNameAndUserIsNull(dish.getName())){//TODO зробить так шоб було видно хто додав блюдо
+            model.addAttribute("message", "dish already exists");
+            /*log.info(dish.getName() + "dish already exists");
+            model.addAttribute("dishes", dishesService.findAllWhereUserIsNull());
+            model.addAttribute("special_dishes", dishesService.findAllByUser(userService.getUserByUsername(user.getUsername())));
+            model.addAttribute("role", userService.getUserByUsername(user.getUsername()).getRoles().getAuthority());
+            model.addAttribute("checkBox", new BooleanDTO());*/
+
+            return getAllDishes(user,model);
+//            return "dishes";
+        }
+
+        if(user.getAuthorities().contains(Role.valueOf("ROLE_USER")) || booleanDTO.isBoolValue()){
+            dish.setUser(userService.getUserByUsername(user.getUsername()));
+        }
+
+        try {
+            dishesService.saveNewDish(dish);
+        } catch (Exception ex) {
+//            log.info(dish.getName() + "dish already exists");
+//            model.addAttribute("dishes", dishesService.findAllWhereUserIsNull());
+//            model.addAttribute("message", "dish already exists");
+//            model.addAttribute("special_dishes", dishesService.findAllByUser(userService.getUserByUsername(user.getUsername())));
+//            model.addAttribute("role", userService.getUserByUsername(user.getUsername()).getRoles().getAuthority());
+//            model.addAttribute("checkBox", new BooleanDTO());
+//
+//            return "dishes";
+        }
 
         return "redirect:/dishes";
     }
@@ -137,16 +160,17 @@ public class MainController {
     @GetMapping("select_dishes")
     public String selectDishesPage(@AuthenticationPrincipal User user,Model model){
         MyUser current_user = userService.getUserByUsername(user.getUsername());
-        List<UserDish> userDishes = userDishService.findAllByUser(current_user);
+        List<UserDish> userDishes = userDishService.findAllByUserAndDate(current_user, LocalDate.now());
 
         // можно обойтись без этой строчки кода, если в select_dishes.html
         // принимать объекты класса UserDish, а не User
-        List<Dish> dishes = userDishes.stream().map(UserDish::getDish).collect(Collectors.toList());
+        List<Dish> special_today_dishes = userDishes.stream().map(UserDish::getDish).collect(Collectors.toList());
+        List<Dish> dishes = dishesService.findAllWhereUserIsNull();
+        dishes.addAll(dishesService.findAllByUser(current_user));
 
-        model.addAttribute("special_dishes", dishes);
-
+        model.addAttribute("special_dishes", special_today_dishes);
         model.addAttribute("select_dish", new UserDishDTO());
-        model.addAttribute("dishes", dishesService.getAllDishes().getDishes());
+        model.addAttribute("dishes", dishes);
         return "select_dishes";
     }
 
@@ -179,14 +203,15 @@ public class MainController {
         return "redirect:/select_dishes";
     }
 
-    @GetMapping(value = "/select_dishes/history")
+    @GetMapping(value = "/select_dishes-history")
     public String showHistory(@AuthenticationPrincipal User user, Model model){
 //        userDishService.findAllByUser();
         List<UserDish> userDishes = userDishService.findAllByUser(userService.getUserByUsername(user.getUsername()));
 
         Map<String, List<UserDish>> map = userDishes.stream().collect(Collectors.groupingBy(userDish -> userDish.getDate().toString()));
-        model.addAttribute("map", map);
-
+        TreeMap<String, List<UserDish>> treeMap = new TreeMap<>(Collections.reverseOrder());
+        treeMap.putAll(map);
+        model.addAttribute("map", treeMap);
 
         return "dishes_history";
     }
@@ -206,5 +231,8 @@ public class MainController {
             model.addAttribute("calories_to_gain", -values.get(1));
         return "calculate_calories";
     }
-
+    @GetMapping("/test")
+    public String testCss(Model model){
+        return "test";
+    }
 }

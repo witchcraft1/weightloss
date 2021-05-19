@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -23,6 +24,10 @@ public class UserDishService {
     }
     public List<UserDish> findAllByUser(MyUser user){
         return userDishRepository.findAllByUser(user);
+    }
+
+    public List<UserDish> findAllByUserAndDate(MyUser user, LocalDate localDate){
+        return userDishRepository.findAllByUserAndDate(user, localDate);
     }
 
     public List<UserDish> findAllByDish(Dish dish){

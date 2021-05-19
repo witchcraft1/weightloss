@@ -1,0 +1,48 @@
+body, html {
+    height: 100%;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.42em;
+    color:#A7A1AE;
+}
+
+.blue_ {
+    font-size:3em;
+    font-weight: 300;
+    line-height:1em;
+    /*text-align: center;*/
+    color: #4DC3FA;
+}
+
+.pinky-red {
+    font-size:1em;
+    font-weight: 300;
+    text-align: center;
+    display: block;
+    line-height:1em;
+    padding-bottom: 2em;
+    color: #FB667A;
+}
+
+.pink-red {
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #FB667A;
+    text-decoration: none;
+}
+
+.blue { color: #185875; }
+.yellow { color: #FFF842; }
+
+.bg {
+    /*background-image: url("https://mdbootstrap.com/img/Photos/Horizontal/Nature/full page/img(20).jpg");*/
+    /*background-image: url("../images/dark-bg2.jpg");*/
+    /*height: 100%;*/
+    /*background: center center fixed;*/
+    min-height: 100%;
+    height: auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}
