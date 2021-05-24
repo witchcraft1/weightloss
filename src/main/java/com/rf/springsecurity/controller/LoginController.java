@@ -15,4 +15,9 @@ public class LoginController {
         model.addAttribute("logout", logout != null);
         return "login";
     }
+
+    @RequestMapping("/login2")
+    public String getLogin2(){
+        return "reg_advanced";
+    }
 }

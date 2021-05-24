@@ -14,7 +14,7 @@ public interface DishesRepository extends JpaRepository<Dish, Long> {
         Optional<Dish> findById(Long id);
         List<Dish> findAllByUser(MyUser user);
         List<Dish> findAllByUserIsNull();
-        List<Dish> findAllByUserDishes(UserDish userDish);
+//        List<Dish> findAllByUserDishes(UserDish userDish);
         boolean existsDishByNameAndUserIsNull(String name);
         Dish findDishById(Long id);
 }

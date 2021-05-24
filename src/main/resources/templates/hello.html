@@ -21,6 +21,26 @@
                     <h2 class="pink-red" th:text="${login}"></h2>
                     <h2 class="pink-red" th:text="${role}"></h2>
                 </div>
+                <div class="col-md-6 col-md-offset-3 text-white">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h1 class="panel-title">Your personal weight loss plan is ready</h1>
+                        </div>
+                        <div class="panel-body">
+                            <p>Daily calorie budget:</p>
+                            <h2 th:text="${plan_dto.dailyCalorieBudget}"></h2>
+
+                            <p>Total weight loss:</p>
+                            <h2 th:text="${plan_dto.totalWeightLoss}"></h2>
+
+                            <p>Weekly weight loss:</p>
+                            <h2 th:text="${plan_dto.weeklyWeightLoss}"></h2>
+
+                            <p>Goal date:</p>
+                            <h2 th:text="${plan_dto.goalDate}"></h2>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <a th:if="${role == 'ROLE_ADMIN'}" href="/all_users"  th:text="#{label.users}" ></a>

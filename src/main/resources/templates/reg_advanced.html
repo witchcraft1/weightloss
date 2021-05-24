@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML page with simple mathematical formulas</title>
+
+<!--  <link th:rel="stylesheet" th:href="@{public/css/for-login-adv.css}">-->
+  <link th:href="@{public/css/style.css}" th:rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+
+</head>
+<body>
+<div class="bg" style="background-image: url('public/images/dark-bg12.jpg')">
+  <div th:replace="/fragments/languages"> </div>
+  <div class="container text-white">
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-default" style="margin-top:45px">
+          <div class="panel-heading">
+            <h3 class="panel-title" th:text="#{title.registration}"></h3>
+          </div>
+
+          <div class="panel-body">
+<!--  <div class="calculator card" id="accordionExample" >-->
+    <!--input type="text" class="calculator-screen z-depth-1" value="" disabled /-->
+    <div class="calculator-screen calculator-header">Registration</div>
+
+    <div  class="btn-group accordion" role="group" aria-label="Basic example" style="display:flex">
+      <button type="button" class="btn btn-secondary section" name="prev">
+        <
+      </button>
+      <button type="button" class="btn btn-secondary section" name="step_1">
+        Step 1
+      </button>
+      <button type="button" class="btn btn-secondary section" name="step_2">
+        Step 2
+      </button>
+      <button type="button" class="btn btn-secondary section" name="step_3" style="">
+        Step 3
+      </button>
+      <button type="button" class="btn btn-secondary section" name="step_4">
+        Step 4
+      </button>
+      <button type="button" class="btn btn-secondary section" name="step_5">
+        Step 5
+      </button>
+      <button type="button" class="btn btn-secondary section" name="final_step">
+        Final
+      </button>
+      <button type="button" class="btn btn-secondary section" name="next">
+        >
+      </button>
+    </div>
+
+
+      <form th:action="@{/registration}" method="post" th:object="${userDto}">
+        <div th:object="${userInfoDto}">
+        <p th:if="${message}" class="alert alert-info" role="alert" th:text="${message}"></p>
+<!--        <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">-->
+          <div id="step_1" class="collapse" th:name="step_1">
+            <div class="card-body">
+              <label for="currentWeight" text="Current weight in kg" style="color:black">Current weight in kg</label>
+              <input type="number" class="form-control" id="currentWeight" aria-describedby="emailHelp" placeholder="Current weight"
+                      th:field="${userInfoDto.weight}" >
+
+              <label for="desireWeight" text="Goal weight" style="color:black;">Goal weight</label>
+              <input type="number" class="form-control" id="desireWeight" aria-describedby="emailHelp" placeholder="Goal weight"
+                      th:field="${userInfoDto.goalWeight}" >
+              <button type="button" class="btn btn-secondary calc" name="step_1" style="margin-top: 15px">
+                Next
+              </button>
+            </div>
+          </div>
+
+          <div id="step_2" class="collapse" th:name="step_2">
+            <div class="card-body">
+              <label for="currentHeight" text="Current height in cm" style="color:black;">Current height in cm</label>
+              <input type="number" class="form-control" id="currentHeight" aria-describedby="emailHelp" placeholder="Current height"
+                      th:field="${userInfoDto.height}" >
+              <button type="button" class="btn btn-secondary calc" name="step_2" style="margin-top: 15px">
+                Next
+              </button>
+            </div>
+          </div>
+
+          <div id="step_3" class="collapse" th:name="step_3">
+            <div class="card-body">
+              <label text="Select biological sex" style="display: block; color: black">Select biological sex:</label>
+
+              <input type="radio" id="male" name="sex" th:field="${userInfoDto.male}" th:value="MALE" >
+              <label for="male" style="color: black" >Male</label>
+
+              <input type="radio" id="female" name="sex" th:field="${userInfoDto.male}" th:value="MALE">
+              <label for="female" style="color: black" >Female</label>
+
+              <button type="button" class="btn btn-secondary calc" name="step_3" style="margin-top: 15px;display: block">
+                Next
+              </button>
+            </div>
+          </div>
+
+          <div id="step_4" class="collapse" th:name="step_4">
+            <div class="card-body">
+              <label for="dob" text="Select your date of birth" style="color: black">Select your date of birth</label>
+              <input type="date" id="dob" name="dob"
+                     value="2021-05-22"
+                     min="1910-01-01" max="2003-12-31" style="display: block; color:black"
+                     th:field="${userInfoDto.dob}" >
+              <button type="button" class="btn btn-secondary calc" name="step_4" style="margin-top: 15px">
+                Next
+              </button>
+            </div>
+          </div>
+
+        <div id="step_5" class="collapse" th:name="step_5">
+          <div class="card-body">
+            <ol>
+              <li>
+                <p style="color: black">Опишите свой образ жизни</p>
+                <ul>
+                  <li>
+                     <input type="radio" id="lifestyle_1"
+                           name="lifestyle" value="email"
+                            th:field="${userInfoDto.lifestyle}" th:value="PASSIVE">
+                    <label for="lifestyle_1" style="color: black">Сидячий: большую часть дня провожу сидя</label>
+                  </li>
+
+
+                  <li>
+                        <input type="radio" id="lifestyle_2"
+                               name="lifestyle" value="phone"
+                               th:field="${userInfoDto.lifestyle}" th:value="SEDENTARY">
+                        <label for="lifestyle_2" style="color: black">Малоподвижный: большую часть дня провожу на ногах</label>
+                  </li>
+
+                  <li>
+                  <input type="radio" id="lifestyle_3"
+                         name="lifestyle" value="mail"
+                         th:field="${userInfoDto.lifestyle}" th:value="ACTIVE">
+                  <label for="lifestyle_3" style="color: black">Подвижный: физические нагрузки большую часть дня</label>
+                  </li>
+
+                  <li>
+                  <input type="radio" id="lifestyle_4"
+                         name="lifestyle" value="mail"
+                         th:field="${userInfoDto.lifestyle}" th:value="VERY_ACTIVE">
+                  <label for="lifestyle_4" style="color: black">Очень Подвижный: тяжелые физические нагрузки большую часть дня</label>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <p style="color: black"> Сколько раз в неделю планируете выполянть упражнения?</p>
+                <select name="exercise_goal" id="exercise_goal"  style="color: black"
+                        th:field="${userInfoDto.exercisesPerWeek}">
+                  <option th:value="0">0</option>
+                  <option th:value="1">1</option>
+                  <option th:value="2">2</option>
+                  <option th:value="3">3</option>
+                  <option th:value="4">4</option>
+                  <option th:value="5">5</option>
+                  <option th:value="6">6</option>
+                  <option th:value="7">7</option>
+                </select>
+                <span style="color: black">тренировок в неделю</span>
+
+              </li>
+              <li>
+                <p style="color: black">Какова ваша цель?</p>
+                <select name="goal_loss_per_week" id="goal_loss_per_week"  style="color: black"
+                        th:field="${userInfoDto.weightLossPerWeek}">
+                  <option th:value="1.0"> Сбросить по 1кг в неделю</option>
+                  <option th:value="0.75"> Сбросить по 0.75кг в неделю</option>
+                  <option th:value="0.5"> Сбросить по 0.5кг в неделю</option>
+                  <option th:value="0.25"> Сбросить по 0.25кг в неделю</option>
+                </select>
+              </li>
+
+
+                <button type="button" class="btn btn-secondary calc" name="step_5" style="margin-top: 15px">
+                  Next
+                </button>
+            </ol>
+          </div>
+        </div>
+
+        <div id="final_step" class="collapse" th:name="final_step">
+          <div class="card-body">
+            <label for="first_name" text="First name" style="color: black">First name</label>
+            <input type="text" class="form-control" id="first_name" placeholder="First name"
+                   name="login"  pattern="\w{2,20}"
+                   th:field="${userInfoDto.nick}">
+
+            <label for="email" text="email" style="color: black">Email</label>
+            <input type="text" class="form-control" id="email" placeholder="email"
+                   name="login"  pattern="\w+@.{1,10}\..{2,5}"
+                   th:field="${userDto.login}">
+
+            <label for="password" text="password" style="color: black">password</label>
+            <input type="text" class="form-control" id="password" placeholder="password"
+                   name="login"  pattern="\w{4,}"
+                   th:field="${userDto.password}">
+
+            <label for="confirm_pass" text="confirm_pass" style="color: black">confirm password</label>
+            <input type="text" class="form-control" id="confirm_pass" placeholder="confirm pass"
+                   name="login"  pattern="\w{4,}"
+                   th:field="${userDto.confirmedPassword}">
+
+            <button type="submit" class="btn btn-secondary calc" name="register" th:text="Register" style="margin-top: 15px">
+              Register
+            </button>
+          </div>
+        </div>
+
+  <!--        <p th:if="${message}" th:text="#{}" class="calculator-screen z-depth-1" style="display: none;" value="5" placeholder="fsdfsd" ></p>-->
+        </div>
+      </form>
+
+  </div>
+<!--          </div>-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+<script>
+  let links = document.querySelectorAll("div button");
+  let output = document.querySelector("input.calculator-screen");
+
+  let buttonsSection = document.querySelectorAll("div button.section")
+  let buttonsNext = document.querySelectorAll("div button.calc")
+
+  for(let next of buttonsNext){
+    next.addEventListener('click', function (e){
+      let sections = document.getElementsByClassName("collapse");
+      let isNext = false;
+      for (let section of sections) {
+        if(isNext){
+          section.style.display = "block";
+          for(let button of buttonsSection){
+            if(button.getAttribute("name") === section.id) {
+              button.focus()
+              break;
+            }
+          }
+          break;
+        }
+        if (section.id === next.getAttribute("name")) {
+          section.style.display = "none";
+          isNext = true;
+        }
+      }
+    })
+  }
+
+  for (let link of buttonsSection) {
+    link.addEventListener('click', function(e) {
+      let sections = document.getElementsByClassName("collapse");
+
+      let sectionPrev = null;
+      let currSection = null;
+
+      for(let section of sections){
+        if(section.style.display === "block"){
+          currSection = section;
+          break;
+        }
+        sectionPrev = section;
+      }
+
+      if(link.getAttribute("name") === "prev") {
+        if(sectionPrev != null) {
+          currSection.style.display = "none";
+          sectionPrev.style.display = "block";
+          for (let button of buttonsSection) {
+            if (button.getAttribute("name") === sectionPrev.id) {
+              button.focus()
+              break;
+            }
+          }
+        }else{
+          for (let button of buttonsSection) {
+            if (button.getAttribute("name") === currSection.id) {
+              button.focus()
+              break;
+            }
+          }
+        }
+        return;
+      }
+
+      for (let section of sections) {
+        if (section.id === link.getAttribute("name") && section.style.display === "none") {
+          section.style.display = "block";
+          //  output.style.display = "block";
+        } else if(section.id === link.getAttribute("name") && section.style.display === "block"){
+          output.style.display = "none";
+          section.style.display = "none";
+        } else {
+          section.style.display = "none";
+        }
+
+        sectionPrev = section;
+      }
+    });
+  }
+
+  function showAnswer(){
+    document.querySelector("input.calculator-screen").style.display = "block";
+  }
+
+  function calculateCircle(){
+    let radius = document.getElementById("inputCircle").value;
+    let outputValue = "";
+    outputValue+= "S = " + (Math.PI * Math.pow(radius,2)).toFixed(2) + ", d = " + 2*radius + ", O = " + (2*Math.PI*radius).toFixed(2);
+    output.value = outputValue;
+    showAnswer();
+  }
+  function calculateRectangle(){
+    let width = document.getElementById("inputRectangleWidth").value;
+    let height = document.getElementById("inputRectangleHeight").value;
+    let S = width*height, P = 2*(width+height),  d =  Math.sqrt(width*width + height*height),
+            alpha = Math.atan(width/height), beta =  Math.atan(height/width);
+    output.value = "S = " + S + ", P = " + P + ", d = " + d
+            + ", alpha = " + alpha + ", beta = " + beta ;
+    showAnswer();
+  }
+  function calculateSquare(){
+    let side = document.getElementById("inputSquare").value;
+    /*(S = a 2 ), периметр (P = 4a),
+    діагональ (d = a√2), радіус вписаного кола (R = a/2), радіус
+    описаного кола (R = a(√2/2))*/
+    let S = side *side, P = 4 * side, d = (side * Math.sqrt(2)).toFixed(2), r = side/2, R = (side * (Math.sqrt(2)/2)).toFixed(2);
+    output.value = "S = " + S + ", P = " + P + ", d = " + d + ", r = " + r + ", R = " + R ;
+    showAnswer();
+  }
+  function calculateTriangle(){
+
+    showAnswer();
+  }
+  //зробити вивід тільки тоді коли нажимається кнопка обрахувати
+</script>
+
+</html>

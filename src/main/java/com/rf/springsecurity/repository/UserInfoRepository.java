@@ -12,14 +12,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
-    UserInfo findByUserAndActiveTrue(MyUser user);
-    List<UserInfo> findAllByUserAndActiveTrue(MyUser user);
+    UserInfo findByUser(MyUser user);
+    List<UserInfo> findAllByUser(MyUser user);
 
-   @Transactional
+   /*@Transactional
    @Modifying
     @Query(value = "update UserInfo u set u.age = :age, u.height = :height, u.weight = :weight," +
             "u.lifestyle = :style where u.user = :user")
     void updateUserInfo(@Param("age") Integer age, @Param("height")Integer height,
                         @Param("weight")Integer weight, @Param("style") Lifestyle lifestyle,
-                          @Param("user") MyUser user);
+                          @Param("user") MyUser user);*/
 }

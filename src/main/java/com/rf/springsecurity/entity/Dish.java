@@ -41,10 +41,14 @@ public class Dish  {
 
     /*@ManyToMany(mappedBy = "dishes")
     private List<*//*DishUser*//*User> users;*/
-    @OneToMany(mappedBy = "dish")
-    private List<UserDish> userDishes;
+    /*@OneToMany(mappedBy = "dish")
+    private List<UserDish> userDishes;*/
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne/*(fetch = FetchType.LAZY)*/
     //@Column(nullable = true)
     private MyUser user;
+
+    public Dish() {
+
+    }
 }

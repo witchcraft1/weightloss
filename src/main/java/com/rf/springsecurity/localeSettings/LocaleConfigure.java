@@ -1,4 +1,4 @@
-package com.rf.springsecurity;
+package com.rf.springsecurity.localeSettings;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;

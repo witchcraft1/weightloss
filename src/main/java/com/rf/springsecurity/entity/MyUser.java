@@ -1,12 +1,13 @@
 package com.rf.springsecurity.entity;
 
+import com.rf.springsecurity.security.UserRole;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 
 @Data
@@ -17,10 +18,10 @@ import java.util.Set;
 @Entity
 @Table( name="users",
         uniqueConstraints={@UniqueConstraint(columnNames={"login"})})
-public class MyUser {
+public class MyUser implements UserDetails {
     @Id
     @GeneratedValue (strategy = GenerationType.SEQUENCE)//SEQUENCE)
-    @Column(name = "id", nullable = false, unique = true)
+//    @Column(name = "id", nullable = false, unique = true)
     private Long id;
 
     @Column(unique = true, nullable = false)
@@ -32,10 +33,14 @@ public class MyUser {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
 //    @ManyToOne
-    private Role roles;
+    private UserRole role;
 
-    private boolean active;
+//    private boolean active;
 
+    private boolean isAccountNonExpired;
+    private boolean isAccountNonLocked;
+    private boolean isCredentialsNonExpired;
+    private boolean isEnabled;
    /* @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @JoinColumn(name = "userInfoId", referencedColumnName = "id")
     @OneToOne(fetch = FetchType.LAZY)//!!!
@@ -43,8 +48,8 @@ public class MyUser {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     @OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST)*/
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
-    private UserInfo userInfo;
+    /*@OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
+    private UserInfo userInfo;*/
 
    /* @ManyToMany
     @JoinTable(
@@ -54,9 +59,44 @@ public class MyUser {
     )
     private List<Dish> dishes;*/
 
-   @OneToMany(mappedBy = "user")
+   /*@OneToMany(mappedBy = "user")
     private List<UserDish> userDishes;
 
    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    private List<Dish> special_dishes;
+    private List<Dish> special_dishes;*/
+
+
+   public UserRole getRole(){
+       return role;
+   }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return role.getGrantedPermissions();
+    }
+
+    @Override
+    public String getUsername() {
+        return login;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return isAccountNonExpired;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return isAccountNonLocked;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return isCredentialsNonExpired;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isEnabled;
+    }
 }

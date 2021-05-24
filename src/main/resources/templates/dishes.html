@@ -28,7 +28,7 @@
             </tr>
         </thead>
 
-        <tbody>
+        <tbody th:if="${dishes}">
 
             <tr th:each="dish: ${dishes}">
                     <td><span th:text="${dish.name}"> </span></td>

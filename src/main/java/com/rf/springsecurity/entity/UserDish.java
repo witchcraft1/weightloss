@@ -20,12 +20,12 @@ public class UserDish implements Serializable {
 
     @ManyToOne
     @Id
-    @JoinColumn(name="user_id", referencedColumnName = "id")
+//    @JoinColumn(name="user_id", referencedColumnName = "id")
     private MyUser user;
 
     @ManyToOne
     @Id
-    @JoinColumn(name="dish_id", referencedColumnName = "id")
+//    @JoinColumn(name="dish_id", referencedColumnName = "id")
     private Dish dish;
 
     @Column(name = "grams")

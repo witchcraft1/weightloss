@@ -17,22 +17,34 @@ public class UserInfo {
     @Column(name = "id_info", nullable = false, unique = true)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @Column
+    private String nickname;
+
+    @OneToOne/*(fetch = FetchType.LAZY)*/
     private MyUser user;
 
     @Column
-    private int age;
+    private int weight; //kg
+    @Column
+    private int goalWeight;
 
     @Column
     private int height; //cm
 
     @Column
-    private int weight; //kg
+    private int age;
 
+    @Enumerated(EnumType.STRING)
     @Column
-    private boolean active;
+    private Male male;
 
     @Enumerated(EnumType.STRING)
     @Column
     private Lifestyle lifestyle;
+
+    @Column
+    private int exercisesPerWeek;
+
+    @Column
+    private float weightLossPerWeek;
 }

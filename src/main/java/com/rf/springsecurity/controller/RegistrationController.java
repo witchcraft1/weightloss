@@ -1,6 +1,9 @@
 package com.rf.springsecurity.controller;
 
-import com.rf.springsecurity.entity.Role;
+import com.rf.springsecurity.dto.UserDTO;
+import com.rf.springsecurity.dto.UserInfoDto;
+import com.rf.springsecurity.exceptions.RegFailedException;
+import com.rf.springsecurity.security.UserRole;
 import com.rf.springsecurity.entity.MyUser;
 import com.rf.springsecurity.entity.UserInfo;
 import com.rf.springsecurity.services.UserInfoService;
@@ -10,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Slf4j
@@ -24,22 +28,33 @@ public class RegistrationController {
         this.userInfoService = userInfoService;
     }
 
+    @ModelAttribute("userDto")
+    public UserDTO userDto(){
+        return new UserDTO();
+    }
+
+    @ModelAttribute("userInfoDto")
+    public UserInfoDto userInfoDto(){
+        return new UserInfoDto();
+    }
+
     @GetMapping("/registration")
     public String registration() {
-        return "registration";
+        return "reg_advanced";
     }
 
     @PostMapping("/registration")
-    public String addUser(MyUser user, Model model) {
-        user.setActive(true);
-        user.setRoles(Role.ROLE_USER);
+    public String addUser(
+            @ModelAttribute("userDto") UserDTO userDTO,
+            @ModelAttribute("userInfoDto") UserInfoDto userInfoDto,
+            Model model) {
+
         try{
-            userService.saveNewUser(user);
-            userInfoService.saveNewUserInfo(UserInfo.builder().user(user).active(true).build());
-        }catch (Exception ex){
-            log.info(user.getLogin() + " login is already exist");
-            model.addAttribute("message", "lon is already exist");
-            return "registration";
+            userService.saveNewUser(userDTO, userInfoDto);
+        }catch (RegFailedException ex){
+//            log.info(user.getLogin() + " login is already exist");
+            model.addAttribute("message", ex.getMessage());
+            return "reg_advanced";
         }
         return "redirect:/login";
     }

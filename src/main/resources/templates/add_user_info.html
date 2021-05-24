@@ -26,21 +26,32 @@
                                 <table class="table table-hover">
                                     <thead>
                                     <tr class="text-primary">
+                                        <th>Nickname</th>
                                         <th   th:text="#{label.user.age}"></th>
                                         <th  th:text="#{label.user.height}"></th>
                                         <th   th:text="#{label.user.weight}"></th>
+                                        <th>Goal weight</th>
                                         <th  th:text="#{label.user.lifestyle}"></th>
+                                        <th>Male</th>
+                                        <th>Weight loss per week</th>
+                                        <th>Exercises per week</th>
                                         <th>  </th>
                                     </tr>
                                     </thead>
 
                                     <tbody >
-                                        <tr class="text-secondary">
+                                        <tr class="text-secondary text-white">
                                             <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
+
+                                            <td > <!--class="form-group"-->
+                                                <!--                      <td><span th:text="${current_user?.age}">  </span></td>-->
+                                                <input type="text" style="background: inherit; border: none;" class="form-control" id="nickname" th:value="${current_user?.nickname}"
+                                                       name="nickname" required pattern="\w{4,}">
+                                            </td>
                                             <td > <!--class="form-group"-->
                         <!--                      <td><span th:text="${current_user?.age}">  </span></td>-->
-                                                <input type="number" style="background: inherit; border: none;" class="form-control" id="age_" th:value="${current_user?.age}"
-                                                       name="age" required min="0" max="120">
+                                                <input type="number" style="background: inherit; border: none;" class="form-control" id="age" th:value="${current_user?.age}"
+                                                       name="age" required min="18" max="120">
                                             </td>
                                             <td >
 <!--                                              <td><span th:text="${current_user?.height}"></span></td>-->
@@ -53,12 +64,36 @@
                                                        name="weight" required min="0">
                                             </td>
                                             <td class="form-group">
+                                                <!--                                                 <td><span th:text="${current_user?.weight}"></span></td>-->
+                                                <input type="number" style="background: inherit; border: none;  " class="form-control" id="goalWeight" th:value="${current_user?.goalWeight}"
+                                                       name="goalWeight" required min="0">
+                                            </td>
+                                            <td class="form-group">
                                                  <span th:text="${current_user?.lifestyle}"></span>
                                                 <label class="text-danger" for="lifestyle" th:text="#{label.select}"></label>
                                                 <select style="background: none; border: none;" class="form_control" id="lifestyle" name="lifestyle" required>
-                                                    <option  th:text="${current_user?.lifestyle}"  selected="selected" hidden></option>
-                                                    <option   th:each="lifestyle: ${lifestyles}" th:text="${lifestyle}"></option>
+                                                    <option  th:text="${current_user?.lifestyle}"  selected="selected" hidden style="color: honeydew"></option>
+                                                    <option   th:each="lifestyle: ${lifestyles}" th:text="${lifestyle}" style="color: honeydew"></option>
                                                 </select>
+                                            </td>
+                                            <td class="form-group">
+                                                <span th:text="${current_user?.male}"></span>
+                                                <label class="text-danger" for="male" th:text="#{label.select}"></label>
+                                                <select style="background: none; border: none;" class="form_control" id="male" name="male" required>
+                                                    <option  th:text="${current_user?.male}"  selected="selected" hidden style="color: honeydew"></option>
+                                                    <option   th:each="male: ${males}" th:text="${male}" style="color: honeydew"></option>
+                                                </select>
+                                            </td>
+
+                                            <td >
+                                                <!--                                              <td><span th:text="${current_user?.height}"></span></td>-->
+                                                <input type="number"  style="background: inherit; border: none;" class="form-control" id="weightLossPerWeek" th:value="${current_user?.weightLossPerWeek}"
+                                                       name="weightLossPerWeek" required min="0" max="1" step="0.05">
+                                            </td>
+                                            <td >
+                                                <!--                                              <td><span th:text="${current_user?.height}"></span></td>-->
+                                                <input type="number"  style="background: inherit; border: none;" class="form-control" id="exercisesPerWeek" th:value="${current_user?.exercisesPerWeek}"
+                                                       name="exercisesPerWeek" required min="0" max="7">
                                             </td>
                                             <td>
                                                 <button type="submit" class="btn btn-outline-success" th:text="#{button.save}"></button>
