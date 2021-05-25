@@ -29,7 +29,15 @@ public class UserDish implements Serializable {
     private Dish dish;
 
     @Column(name = "grams")
-    private Long grams;
+    private Long value;
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    private Portion portion;
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    private Mealtime mealtime;
 
     @Id
     @Column(name = "date")

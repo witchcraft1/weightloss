@@ -20,7 +20,6 @@
                 <th scope="col" th:text="#{label.user.id}"></th>
                 <th scope="col" th:text="#{label.login}"></th>
                 <th scope="col" th:text="#{label.password}"></th>
-                <th scope="col" th:text="#{label.user.active}"></th>
                 <th scope="col" th:text="#{label.user.role}"></th>
                 <th scope="col" th:text="#{label.user.age}"></th>
                 <th scope="col" th:text="#{label.user.height}"></th>
@@ -37,8 +36,7 @@
                 <td><span th:text="${user.id}"> Id </span></td>
                 <td><span th:text="${user.user.login}">Login </span></td>
                 <td><span th:text="${user.user.password}"> Password </span></td>
-                <td><span th:text="${user.user.active}"> Active </span></td>
-                <td><span th:text="${user.user.getRole}"> Roles </span></td>
+                <td><span th:text="${user.user.role}"> Roles </span></td>
                 <td><span th:text="${user?.age}"> Age </span></td>
                 <td><span th:text="${user?.height}"> Height </span></td>
                 <td><span th:text="${user?.weight}"> Weight </span></td>

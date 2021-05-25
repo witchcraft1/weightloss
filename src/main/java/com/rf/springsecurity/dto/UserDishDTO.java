@@ -1,9 +1,13 @@
 package com.rf.springsecurity.dto;
 
+import com.rf.springsecurity.entity.Mealtime;
+import com.rf.springsecurity.entity.Portion;
 import lombok.Data;
 
 @Data
 public class UserDishDTO {
     private Long dish_id;
-    private Long grams;
+    private Long value;
+    private Portion portion;
+    private Mealtime mealtime;
 }

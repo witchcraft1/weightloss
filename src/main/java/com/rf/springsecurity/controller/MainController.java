@@ -37,10 +37,10 @@ import static java.util.stream.Collectors.joining;
         jsr250Enabled = true)*/
 public class MainController {
 
-    private UserService userService;
-    private DishesService dishesService;
-    private UserInfoService userInfoService;
-    private UserDishService userDishService;
+    private final UserService userService;
+    private final DishesService dishesService;
+    private final UserInfoService userInfoService;
+    private final UserDishService userDishService;
 
     @Autowired
     public MainController(UserService userService, DishesService dishesService, UserInfoService userInfoService, UserDishService userDishService ) {
@@ -81,26 +81,20 @@ public class MainController {
         model.addAttribute("special_dishes", dishesService.findAllByUser(userService.getUserByUsername(user.getUsername())));
         model.addAttribute("role", userService.getUserByUsername(user.getUsername()).getRole().getAuthority());
         model.addAttribute("checkBox", new BooleanDTO());
+        model.addAttribute("portions", Portion.values());
         return "dishes";
     }
 
     @PostMapping("/dishes")
     public String addDish(@AuthenticationPrincipal MyUser user,Dish dish, @ModelAttribute("check-box")BooleanDTO booleanDTO, Model model) {
-        if(dishesService.existsDishByNameAndUserIsNull(dish.getName())){//TODO зробить так шоб було видно хто додав блюдо
-            model.addAttribute("message", "dish already exists");
-            /*log.info(dish.getName() + "dish already exists");
-            model.addAttribute("dishes", dishesService.findAllWhereUserIsNull());
-            model.addAttribute("special_dishes", dishesService.findAllByUser(userService.getUserByUsername(user.getUsername())));
-            model.addAttribute("role", userService.getUserByUsername(user.getUsername()).getRoles().getAuthority());
-            model.addAttribute("checkBox", new BooleanDTO());*/
-
-            return getAllDishes(user,model);
-//            return "dishes";
-        }
-
         if(user.getRole().equals(UserRole.USER) || booleanDTO.isBoolValue()){
-            dish.setUser(userService.getUserByUsername(user.getUsername()));
+            dish.setUser(user);
+        }else if(dishesService.existsDishByNameAndUserIsNull(dish.getName())){//TODO зробить так шоб було видно хто додав блюдо
+            model.addAttribute("message", "dish already exists");
+            /*log.info(dish.getName() + "dish already exists");*/
+            return getAllDishes(user,model);
         }
+
 
         try {
             dishesService.saveNewDish(dish);
@@ -157,25 +151,47 @@ public class MainController {
         return "select_recent_data";
     }
 
-    @GetMapping("select_dishes")
+    @GetMapping("/select_dishes")
     public String selectDishesPage(@AuthenticationPrincipal MyUser user,Model model){
         MyUser current_user = userService.getUserByUsername(user.getUsername());
         List<UserDish> userDishes = userDishService.findAllByUserAndDate(current_user, LocalDate.now());
 
         // можно обойтись без этой строчки кода, если в select_dishes.html
         // принимать объекты класса UserDish, а не User
-        List<Dish> special_today_dishes = userDishes.stream().map(UserDish::getDish).collect(Collectors.toList());
+//        List<Dish> special_today_dishes = userDishes.stream().map(UserDish::getDish).collect(Collectors.toList());
         List<Dish> dishes = dishesService.findAllWhereUserIsNull();
         dishes.addAll(dishesService.findAllByUser(current_user));
 
-        model.addAttribute("special_dishes", special_today_dishes);
+        userDishes.forEach(userDish -> {
+            Dish userDish_ = userDish.getDish();
+
+            double times_bigger = userDish.getValue() * 1. * userDish.getPortion().getGramsInPortion() / userDish_.getPortion().getGramsInPortion();
+
+            userDish.setDish(
+                    Dish.builder()
+                                .id(userDish_.getId())
+                                .name(userDish_.getName())
+                                .calories((int) (userDish_.getCalories() * times_bigger))
+                                .carbs((int)(userDish_.getCarbs() * times_bigger))
+                                .fat((int)(userDish_.getFat() * times_bigger))
+                                .protein((int)(userDish_.getProtein()*times_bigger))
+                            .build()
+            );
+        });
+
+        Dish summary = userDishService.getSummary(userDishes);
+
+        model.addAttribute("special_dishes", userDishes/*special_today_dishes*/);
         model.addAttribute("select_dish", new UserDishDTO());
         model.addAttribute("dishes", dishes);
+        model.addAttribute("portions", Portion.values());
+        model.addAttribute("mealtimes", Mealtime.values());
+        model.addAttribute("summary", summary);
         return "select_dishes";
     }
 
     @Transactional
-    @PostMapping("select_dishes")
+    @PostMapping("/select_dishes")
     public String selectDishes(@AuthenticationPrincipal MyUser user,@ModelAttribute("select_dish") UserDishDTO userDishDTO, Model model){
         MyUser current_user = userService.getUserByUsername(user.getUsername());
 
@@ -185,12 +201,15 @@ public class MainController {
         /*if(userDish != null){
             return "redirect:/select_dishes";
         }else{*/
-            userDishService.save(UserDish.builder()
+        userDishService.save(UserDish.builder()
                     .dish(dish)
                     .user(current_user)
-                    .grams(userDishDTO.getGrams())
+//                    .grams(userDishDTO.getGrams())
+                    .value(userDishDTO.getValue())
+                    .portion(userDishDTO.getPortion())
+                    .mealtime(userDishDTO.getMealtime())
                     .date(LocalDate.now())
-                    .build());
+                .build());
 //        }
 
         return "redirect:/select_dishes";

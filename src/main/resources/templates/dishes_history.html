@@ -41,7 +41,7 @@
                     <tr th:each="dishUser:${entry.getValue()}">
                         <td><em class="text-success" th:text="${dishUser.getDish().getName()}"> </em></td>
                             <!--                <td><span th:text="${entry.getValue()}"> </span></td>-->
-                        <td><b><span class="text-white" th:text="${dishUser.getGrams()}"></span></b></td>
+                        <td><b><span class="text-white" th:text="${dishUser.getValue()}"></span></b></td>
                         <td><b><span class="text-white" th:text="${dishUser.getDish().getCalories()}"></span></b></td>
                     </tr>
 <!--                    </div>-->

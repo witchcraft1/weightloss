@@ -1,15 +1,8 @@
 package com.rf.springsecurity.entity;
 
 import lombok.*;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.NaturalIdCache;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 @AllArgsConstructor
 @Data
@@ -22,7 +15,6 @@ public class Dish  {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)//Sequence
     @Column(name = "id", nullable = false, unique = true)
     private Long id;
-
 
     @Column(nullable = false) //unique = true
     private String name;
@@ -39,6 +31,9 @@ public class Dish  {
     @Column(nullable = false)
     private int protein;
 
+    @Enumerated(EnumType.STRING)
+    @Column
+    private Portion portion;
     /*@ManyToMany(mappedBy = "dishes")
     private List<*//*DishUser*//*User> users;*/
     /*@OneToMany(mappedBy = "dish")

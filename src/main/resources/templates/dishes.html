@@ -25,6 +25,7 @@
                 <th th:text="#{label.dish.calories}"></th>
                 <th th:text="#{label.dish.fat}"></th>
                 <th th:text="#{label.dish.carbs}"></th>
+                <th th:text="#{label.dish.portion}"></th>
             </tr>
         </thead>
 
@@ -37,8 +38,9 @@
                     <td><span th:text="${dish.calories}"> </span></td>
                     <td><span th:text="${dish.fat}">  </span></td>
                     <td><span th:text="${dish.carbs}">  </span></td>
+                    <td th:if="${dish.portion != null}"><span th:text="#{${dish.portion.name()}}">  </span></td>
                     <td>
-                       <a th:if="${role.equals('ROLE_ADMIN')}" th:href="@{/dishes/delete/{id}(id=${dish.id})}"  > Delete </a>
+                       <a th:if="${role.equals('ADMIN')}" th:href="@{/dishes/delete/{id}(id=${dish.id})}"  > Delete </a>
                         <!--                    <form th:action = "@{/dishes/${dish.id}/delete}" th:object="${dish_dto}" method="post">-->
 <!--                            <input type="hidden" th:field="${dish_dto.dish_id}">Delete</input>-->
 <!--                            <button type="submit"  th:value="${dish.id}" class="btn btn-danger" th:text="#{label.button.delete}" ></button>-->
@@ -58,6 +60,7 @@
             <th th:text="#{label.dish.calories}"></th>
             <th th:text="#{label.dish.fat}"></th>
             <th th:text="#{label.dish.carbs}"></th>
+            <th th:text="#{label.dish.portion}"></th>
         </tr>
         </thead>
         <tbody>
@@ -69,6 +72,7 @@
             <td><span th:text="${dish.calories}"> </span></td>
             <td><span th:text="${dish.fat}">  </span></td>
             <td><span th:text="${dish.carbs}">  </span></td>
+            <td><span th:text="#{${dish.portion.name()}}">  </span></td>
             <td>
                 <a th:href="@{/dishes/delete/{id}(id=${dish.id})}"  > Delete </a>
                 <!--                    <form th:action = "@{/dishes/${dish.id}/delete}" th:object="${dish_dto}" method="post">-->
@@ -115,10 +119,20 @@
                                 <input type="number" class="form-control" id="carbs" th:placeholder="#{label.dish.carbs}"
                                        name="carbs" required>
                             </div>
-                            <div th:if="${role.equals('ROLE_ADMIN')}" class="form-group">
+
+                            <div class="form-group">
+                                <label for="portion" th:text="#{label.dish.portion}"></label>
+                                <select  id="portion" class="form-control-range" name="portion">
+                                    <!--                                    <option value="">Select dishes</option>-->
+                                    <option th:each="portion_: ${portions}"  th:value="${portion_.name()}"  th:text="#{${portion_.name()}}" ></option>
+                                </select>
+                            </div>
+
+                            <div th:if="${role.equals('ADMIN')}" class="form-group">
                                 <label for="checkbox" th:text="#{label.local.dish}"></label>
                                 <input type="checkbox" id="checkbox" th:field="*{boolValue}" name="chBox">
                             </div>
+
                             <button type="submit" class="btn btn-outline-warning" th:text="#{button.add}"></button>
                         </form>
                     </div>

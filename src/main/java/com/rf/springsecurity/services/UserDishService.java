@@ -46,4 +46,24 @@ public class UserDishService {
     public void deleteAllByDish(Dish dish){
         userDishRepository.deleteAllByDish(dish);
     }
+
+    public Dish getSummary(List<UserDish> userDishes){
+        int calories = 0;
+        int carbs = 0;
+        int fats = 0;
+        int protein = 0;
+        for (UserDish userDish : userDishes) {
+            calories+=userDish.getDish().getCalories();
+            carbs+=userDish.getDish().getCarbs();
+            fats+=userDish.getDish().getFat();
+            protein+=userDish.getDish().getProtein();
+        }
+
+        return Dish.builder()
+                    .calories(calories)
+                    .carbs(carbs)
+                    .fat(fats)
+                    .protein(protein)
+                .build();
+    };
 }
