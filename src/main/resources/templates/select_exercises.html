@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Users</title>
+    <link th:href="@{public/css/style.css}" th:rel="stylesheet">
+</head>
+<body>
+<div class="bg" style="background-image: url('public/images/im')">
+    <div th:replace="/fragments/navbar"></div>
+    <div id = "all_users">
+        <h2 th:text="#{title.all.dishes}"></h2>
+    </div>
+    <div id = "content">
+
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th th:text="#{label.dish.name}"></th>
+                <th th:text="#{label.dish.calories}"></th>
+                <th th:text="#{label.dish.portion}"></th>
+
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr th:each="exercise: ${exercises}">
+                <td><span th:text="${exercise.name} + ${exercise.user != null ? '(own)' :''}"> Id </span></td>
+
+                <td><span th:text="${exercise.caloriesBurnedPerMinute}"> Active </span></td>
+                <td><span th:text="#{${exercise.exerciseMode.name()}}">  </span></td>
+            </tr>
+            </tbody>
+        </table>
+        <a href="/" th:text="#{title.calculate.calories}"></a><br>
+        <a href="/exercises/history" th:text="#{title.dishes.history}"></a>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                    <div class="panel panel-default" style="margin-top:45px">
+                        <div class="panel-heading" th:text="#{label.dish.add}">
+
+                        </div>
+                        <div class="panel-body">
+                            <div th:text="#{label.select.dishes}"></div>
+                            <form th:action = "@{/select_exercises}" th:object="${select_exercise}" method="post">
+                                <!--            <p th:if="${message}" class="alert alert-info" role="alert" th:text="'Dish already exists'"></p>-->
+                                <!--                            <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">-->
+                                <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden" required>
+
+                                <div class="form-group">
+                                    <select  id="exercise" th:field="*{exercise_id}" name="exercise">
+                                        <!--                                    <option value="">Select dishes</option>-->
+                                        <option th:each="exercise: ${exercises}"  th:value="${exercise.id}"  th:text="${exercise.name} + ${exercise.user != null ? '(own)' :''}"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select  id="mode" th:field="*{mode}" name="mode">
+                                        <!--                                    <option value="">Select dishes</option>-->
+                                        <option th:each="mode_: ${modes}"  th:value="${mode_.name()}"  th:text="#{${mode_.name()}}" ></option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group" >
+                                    <label for="minutes" th:text="#{label.select.value}"></label>
+                                    <input type="number" class="form-control" id="minutes" name="minutes" th:placeholder="#{label.select.value}" th:field="*{minutes}" required>
+                                </div>
+                                <button type="submit" class="btn btn-outline-info" th:text="#{button.choose}"></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <h2 th:text="#{title.selected.dishes}"></h2>
+        </div>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th th:text="#{label.dish.name}"></th>
+
+                <th th:text="#{label.dish.calories}"></th>
+                <th>Minutes</th>
+                <th>Mode</th>
+            </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="exercise: ${special_exercises}">
+                    <td><span th:text="${exercise.exercise.name}"> </span></td>
+                    <td><span th:text="${exercise.exercise.caloriesBurnedPerMinute}"> </span></td>
+                    <td><span th:text="${exercise.minutes}">  </span></td>
+                    <td><span th:text="#{${exercise.exerciseMode.name()}}">  </span></td>
+                    <td><a th:href="@{/select_exercises/delete/{id}/{exercise_id}(id=${exercise.id}, exercise_id=${exercise.exercise.id})}"  > Delete </a></td>
+                </tr>
+            </tbody>
+
+            <thead>
+            <tr>
+                <th>Summary</th>
+                <th><span th:text="${summary.caloriesBurnedPerMinute}"> </span></th>
+            </tr>
+            </thead>
+        </table>
+
+    </div>
+
+</div>
+</body>
+</html>

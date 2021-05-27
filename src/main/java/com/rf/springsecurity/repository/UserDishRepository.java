@@ -1,8 +1,8 @@
 package com.rf.springsecurity.repository;
 
-import com.rf.springsecurity.entity.Dish;
+import com.rf.springsecurity.entity.dish.Dish;
 import com.rf.springsecurity.entity.MyUser;
-import com.rf.springsecurity.entity.UserDish;
+import com.rf.springsecurity.entity.user_dish.UserDish;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,4 +17,6 @@ public interface UserDishRepository extends JpaRepository<UserDish, Long> {
     UserDish findByDishAndUser(Dish dish, MyUser user);
     void deleteUserDishByDishAndUser(Dish dish, MyUser user);
     void deleteAllByDish(Dish dish);
+    void deleteByIdAndUserAndDish(Long id, MyUser user, Dish dish);
+    void deleteById(Long id);
 }

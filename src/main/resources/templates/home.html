@@ -1,0 +1,162 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link th:href="@{public/css/style.css}" th:rel="stylesheet">
+</head>
+<body>
+
+<div class="bg" style="background-image: url('public/images/roa.jpg')">
+    <div th:replace="/fragments/navbar"></div>
+    <!--        <div th:replace="/fragments/header"></div>-->
+    <div class="container">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="panel panel-default" style="margin-top:45px">
+              <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        <div class="panel-heading">
+                            <h5 class="panel-title">Daily calorie budget</h5>
+                        </div>
+                    </th>
+                    <th th:text="${calories_budget}"></th>
+                </tr>
+            </thead>
+            <tbody th:with="calories_delta=${calories_budget - summary.calories + summary_ex.caloriesBurnedPerMinute}">
+
+                <tr>
+                    <td>
+                        Progress
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <meter title="GB" style="width:100%" min="0" th:low="${calories_budget/1.2}" th:high="${calories_budget - 1}" th:max="${calories_budget}" optimum="100" th:value="${-calories_delta + calories_budget}">-100</meter>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <span>Food calories consumed</span>
+                    </td>
+                    <td>
+                        <span th:text="${summary.calories}"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span>Exercise calories burned</span>
+                    </td>
+                    <td>
+                        <span th:text="${summary_ex.caloriesBurnedPerMinute}"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span>Net calories so far today </span>
+                    </td>
+                    <td>
+                        <span th:text="${summary.calories - summary_ex.caloriesBurnedPerMinute}"></span>
+                    </td>
+                </tr>
+                <tr >
+                    <td>
+                        <span th:text="#{${calories_delta > 0 ? 'label.can.eat' : 'label.iam'}}"></span>
+                        <span><strong th:text="${' ' + T(java.lang.Math).abs(calories_delta)  + ' '}"></strong></span>
+                        <span th:text="#{${calories_delta > 0 ? 'label.more.calories.today' : 'label.calories.bigger.than.budget'}}"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+            </div>
+        </div>
+
+
+        <div>
+            <h2 th:text="#{title.selected.dishes}"></h2>
+        </div>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th th:text="#{label.dish.name}"></th>
+
+                <th th:text="#{label.dish.protein}"></th>
+                <th th:text="#{label.dish.calories}"></th>
+                <th th:text="#{label.dish.fat}"></th>
+                <th th:text="#{label.dish.carbs}"></th>
+                <th>Value</th>
+                <th>Portion</th>
+            </tr>
+            </thead>
+
+            <div th:each="mealtime: ${mealtimes}">
+                <thead>
+                <tr>
+                    <th th:text="${mealtime}"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="dish: ${special_dishes}" th:if="${dish.mealtime.equals(mealtime)}">
+                    <td><span th:text="${dish.dish.name}"> </span></td>
+                    <td><span th:text="${dish.dish.protein}">  </span></td>
+                    <td><span th:text="${dish.dish.calories}"> </span></td>
+                    <td><span th:text="${dish.dish.fat}">  </span></td>
+                    <td><span th:text="${dish.dish.carbs}">  </span></td>
+                    <td><span th:text="${dish.value}">  </span></td>
+                    <td><span th:text="#{${dish.portion.name()}}">  </span></td>
+                    <td><a th:href="@{/select_dishes/delete/{id}(id=${dish.dish.id})}"  > Delete </a></td>
+                </tr>
+                </tbody>
+            </div>
+
+            <thead>
+            <tr>
+                <th>Summary</th>
+                <th><span th:text="${summary.protein}">  </span></th>
+                <th><span th:text="${summary.calories}"> </span></th>
+                <th><span th:text="${summary.fat}">  </span></th>
+                <th><span th:text="${summary.carbs}">  </span></th>
+            </tr>
+            </thead>
+        </table>
+
+        <div>
+            <h2 th:text="#{title.selected.dishes}"></h2>
+        </div>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th th:text="#{label.dish.name}"></th>
+
+                <th th:text="#{label.dish.calories}"></th>
+                <th>Minutes</th>
+                <th>Mode</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="exercise: ${special_exercises}">
+                <td><span th:text="${exercise.exercise.name}"> </span></td>
+                <td><span th:text="${exercise.exercise.caloriesBurnedPerMinute}"> </span></td>
+                <td><span th:text="${exercise.minutes}">  </span></td>
+                <td><span th:text="#{${exercise.exerciseMode.name()}}">  </span></td>
+                <td><a th:href="@{/select_exercises/delete/{id}(id=${exercise.exercise.id})}"  > Delete </a></td>
+            </tr>
+            </tbody>
+
+            <thead>
+            <tr>
+                <th>Summary</th>
+                <th><span th:text="${summary_ex.caloriesBurnedPerMinute}"> </span></th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+</body>
+</html>

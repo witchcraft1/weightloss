@@ -10,7 +10,7 @@
     <link th:href="@{public/css/style.css}" th:rel="stylesheet">
 </head>
 <body>
-<div class="bg" style="background-image: url('public/images/bg-6.jpg')">
+<div class="bg" style="background-image: url('public/images/wrongPath_bg-6.jpg')">
 <div th:replace="/fragments/navbar"></div>
 <div id = "all_users">
     <h2 th:text="#{title.all.dishes}"></h2>
@@ -44,8 +44,8 @@
             </tr>
         </tbody>
     </table>
-    <a href="/calculate_calories" th:text="#{title.calculate.calories}"></a><br>
-    <a href="/select_dishes-history" th:text="#{title.dishes.history}"></a>
+    <a href="/" th:text="#{title.calculate.calories}"></a><br>
+    <a href="/dishes/history" th:text="#{title.dishes.history}"></a>
     <div class="container">
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
@@ -58,28 +58,29 @@
                         <form th:action = "@{/select_dishes}" th:object="${select_dish}" method="post">
                             <!--            <p th:if="${message}" class="alert alert-info" role="alert" th:text="'Dish already exists'"></p>-->
 <!--                            <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">-->
+                            <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden" required>
 
                             <div class="form-group">
-                                <select  id="user_dish" th:field="*{dish_id}">
+                                <select  id="dish" th:field="*{dish_id}" name="dish">
 <!--                                    <option value="">Select dishes</option>-->
                                     <option th:each="dish: ${dishes}"  th:value="${dish.id}"  th:text="${dish.name} + ${dish.user != null ? '(own)' :''}"></option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <select  id="portion" th:field="*{portion}">
+                                <select  id="portion" th:field="*{portion}" name="portion">
                                     <!--                                    <option value="">Select dishes</option>-->
                                     <option th:each="portion_: ${portions}"  th:value="${portion_.name()}"  th:text="#{${portion_.name()}}" ></option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <select  id="mealtime" th:field="*{mealtime}">
+                                <select  id="mealtime" th:field="*{mealtime}" name="mealtime">
                                     <!--                                    <option value="">Select dishes</option>-->
                                     <option th:each="mealtime_: ${mealtimes}"  th:value="${mealtime_.name()}"  th:text="#{${mealtime_.name()}}" ></option>
                                 </select>
                             </div>
                             <div class="form-group" >
                                 <label for="value" th:text="#{label.select.value}"></label>
-                                <input type="number" class="form-control" id="value" name="grams" th:placeholder="#{label.select.value}" th:field="*{value}" required>
+                                <input type="number" class="form-control" id="value" name="value" th:placeholder="#{label.select.value}" th:field="*{value}" required>
                             </div>
                             <button type="submit" class="btn btn-outline-info" th:text="#{button.choose}"></button>
                         </form>
@@ -120,7 +121,7 @@
                     <td><span th:text="${dish.dish.carbs}">  </span></td>
                     <td><span th:text="${dish.value}">  </span></td>
                     <td><span th:text="#{${dish.portion.name()}}">  </span></td>
-                    <td><a th:href="@{/select_dishes/delete/{id}(id=${dish.dish.id})}"  > Delete </a></td>
+                    <td><a th:href="@{/select_dishes/delete/{id}/{dish_id}(id=${dish.id}, dish_id=${dish.dish.id})}"> Delete </a></td>
                 </tr>
             </tbody>
         </div>

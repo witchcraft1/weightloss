@@ -1,7 +1,7 @@
 package com.rf.springsecurity.services;
 
 import com.rf.springsecurity.dto.DishesDTO;
-import com.rf.springsecurity.entity.Dish;
+import com.rf.springsecurity.entity.dish.Dish;
 import com.rf.springsecurity.entity.MyUser;
 import com.rf.springsecurity.repository.DishesRepository;
 import lombok.extern.slf4j.Slf4j;

@@ -1,13 +1,8 @@
 package com.rf.springsecurity.repository;
 
-import com.rf.springsecurity.entity.Lifestyle;
 import com.rf.springsecurity.entity.MyUser;
-import com.rf.springsecurity.entity.UserInfo;
+import com.rf.springsecurity.entity.userinfo.UserInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

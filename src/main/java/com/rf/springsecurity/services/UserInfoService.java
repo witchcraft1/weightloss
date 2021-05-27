@@ -1,10 +1,10 @@
 package com.rf.springsecurity.services;
 
 import com.rf.springsecurity.dto.PlanDto;
-import com.rf.springsecurity.entity.Lifestyle;
-import com.rf.springsecurity.entity.Male;
+import com.rf.springsecurity.entity.userinfo.Lifestyle;
+import com.rf.springsecurity.entity.userinfo.Male;
 import com.rf.springsecurity.entity.MyUser;
-import com.rf.springsecurity.entity.UserInfo;
+import com.rf.springsecurity.entity.userinfo.UserInfo;
 import com.rf.springsecurity.repository.UserInfoRepository;
 import com.rf.springsecurity.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

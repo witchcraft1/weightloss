@@ -1,5 +1,6 @@
-package com.rf.springsecurity.entity;
+package com.rf.springsecurity.entity.userinfo;
 
+import com.rf.springsecurity.entity.MyUser;
 import lombok.*;
 
 import javax.persistence.*;

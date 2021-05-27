@@ -1,9 +1,12 @@
-package com.rf.springsecurity.entity;
+package com.rf.springsecurity.entity.user_dish;
 
+import com.rf.springsecurity.entity.dish.Dish;
+import com.rf.springsecurity.entity.dish.Mealtime;
+import com.rf.springsecurity.entity.MyUser;
+import com.rf.springsecurity.entity.dish.Portion;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,12 +14,14 @@ import java.time.LocalDate;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name="UserDish")
 @IdClass(UserDishPK.class)
 public class UserDish implements Serializable {
+    public static long id_st;
+    @Id
+    private Long id;
 
     @ManyToOne
     @Id
@@ -28,7 +33,7 @@ public class UserDish implements Serializable {
 //    @JoinColumn(name="dish_id", referencedColumnName = "id")
     private Dish dish;
 
-    @Column(name = "grams")
+    @Column
     private Long value;
 
     @Enumerated(EnumType.STRING)
@@ -39,7 +44,11 @@ public class UserDish implements Serializable {
     @Column
     private Mealtime mealtime;
 
-    @Id
+//    @Id
     @Column(name = "date")
     private LocalDate date;
+
+    public UserDish() {
+
+    }
 }

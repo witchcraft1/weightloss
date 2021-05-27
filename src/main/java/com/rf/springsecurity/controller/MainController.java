@@ -1,21 +1,24 @@
 package com.rf.springsecurity.controller;
 
 
-import com.rf.springsecurity.dto.BooleanDTO;
-import com.rf.springsecurity.dto.PlanDto;
-import com.rf.springsecurity.dto.UserDishDTO;
-import com.rf.springsecurity.entity.*;
+import com.rf.springsecurity.dto.*;
+import com.rf.springsecurity.entity.dish.Dish;
+import com.rf.springsecurity.entity.dish.Mealtime;
+import com.rf.springsecurity.entity.dish.Portion;
+import com.rf.springsecurity.entity.exercise.Exercise;
+import com.rf.springsecurity.entity.exercise.ExerciseMode;
+import com.rf.springsecurity.entity.user_dish.UserDish;
+import com.rf.springsecurity.entity.user_exercise.UserExercise;
+import com.rf.springsecurity.entity.userinfo.Lifestyle;
+import com.rf.springsecurity.entity.userinfo.Male;
+import com.rf.springsecurity.entity.MyUser;
+import com.rf.springsecurity.entity.userinfo.UserInfo;
 import com.rf.springsecurity.security.UserRole;
-import com.rf.springsecurity.services.DishesService;
-import com.rf.springsecurity.services.UserDishService;
-import com.rf.springsecurity.services.UserInfoService;
-import com.rf.springsecurity.services.UserService;
+import com.rf.springsecurity.services.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -24,6 +27,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,16 +45,47 @@ public class MainController {
     private final DishesService dishesService;
     private final UserInfoService userInfoService;
     private final UserDishService userDishService;
+    private final UserExerciseService userExerciseService;
+    private final ExerciseService exerciseService;
 
     @Autowired
-    public MainController(UserService userService, DishesService dishesService, UserInfoService userInfoService, UserDishService userDishService ) {
+    public MainController(UserService userService, DishesService dishesService, UserInfoService userInfoService, UserDishService userDishService, UserExerciseService userExerciseService, ExerciseService exerciseService) {
         this.userService = userService;
         this.dishesService = dishesService;
         this.userInfoService = userInfoService;
         this.userDishService = userDishService;
+        this.userExerciseService = userExerciseService;
+        this.exerciseService = exerciseService;
     }
 
-    @RequestMapping("/")
+    @GetMapping("/")
+    public String getHomePage(@AuthenticationPrincipal MyUser user, Model model){
+        List<UserDish> userDishes = userDishService.findAllByUserAndDate(user, LocalDate.now());
+
+        userDishService.fitUserDishesToPortions(userDishes);
+
+        Dish summary = userDishService.getSummary(userDishes);
+
+        model.addAttribute("special_dishes", userDishes/*special_today_dishes*/);
+        model.addAttribute("mealtimes", Mealtime.values());
+        model.addAttribute("summary", summary);
+
+
+        List<UserExercise> userExercises = userExerciseService.findAllByUserAndDate(user, LocalDate.now());
+
+        userExerciseService.fitUserExercisesToMinutes(userExercises);
+
+        Exercise summary_ex = userExerciseService.getSummary(userExercises);
+
+        model.addAttribute("special_exercises", userExercises);
+        model.addAttribute("modes", ExerciseMode.values());
+        model.addAttribute("summary_ex", summary_ex);
+
+        model.addAttribute("calories_budget", userInfoService.getPlan(user).getDailyCalorieBudget());
+        return "home";
+    }
+
+    @RequestMapping("/plan")
     public String getMainPage(@AuthenticationPrincipal MyUser user, Model model/*, Principal p*/) {
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //        User user = (User) authentication.getPrincipal();
@@ -62,7 +97,7 @@ public class MainController {
         model.addAttribute("weekly_weight_loss", "kilograms");
         model.addAttribute("goal_date", "");*/
 
-        return "hello";
+        return "plan";
     }
 
 
@@ -86,7 +121,7 @@ public class MainController {
     }
 
     @PostMapping("/dishes")
-    public String addDish(@AuthenticationPrincipal MyUser user,Dish dish, @ModelAttribute("check-box")BooleanDTO booleanDTO, Model model) {
+    public String addDish(@AuthenticationPrincipal MyUser user, Dish dish, @ModelAttribute("check-box")BooleanDTO booleanDTO, Model model) {
         if(user.getRole().equals(UserRole.USER) || booleanDTO.isBoolValue()){
             dish.setUser(user);
         }else if(dishesService.existsDishByNameAndUserIsNull(dish.getName())){//TODO зробить так шоб було видно хто додав блюдо
@@ -151,59 +186,87 @@ public class MainController {
         return "select_recent_data";
     }
 
+    @GetMapping("/exercises")
+//    @PreAuthorize("hasRole('ADMIN')")
+    public String getAllExercises(@AuthenticationPrincipal MyUser user, Model model){
+        model.addAttribute("exercises", exerciseService.findAllByUserIsNull());
+        model.addAttribute("special_exercises", exerciseService.findAllByUser(user));
+        model.addAttribute("role", user.getRole().getAuthority());
+        model.addAttribute("checkBox", new BooleanDTO());
+        model.addAttribute("modes", ExerciseMode.values());
+        return "exercises";
+    }
+
+    @PostMapping("/exercises")
+    public String addExercise(@AuthenticationPrincipal MyUser user, Exercise exercise, @ModelAttribute("check-box")BooleanDTO booleanDTO, Model model) {
+        if(user.getRole().equals(UserRole.USER) || booleanDTO.isBoolValue()){
+            exercise.setUser(user);
+        }else if(exerciseService.existsExerciseByNameAndUserIsNull(exercise.getName())){//TODO зробить так шоб було видно хто додав блюдо
+            model.addAttribute("message", "Exercise already exists");
+            /*log.info(dish.getName() + "dish already exists");*/
+            return getAllExercises(user,model);
+        }
+
+
+        try {
+            exerciseService.saveNewExercise(exercise);
+        } catch (Exception ex) {}
+
+        return "redirect:/exercises";
+    }
+    @GetMapping(value = "/exercises/delete/{id}")
+    public String deleteSomeExercise(@PathVariable("id")Long exerciseId, Model model){
+        Exercise delete_exercise = exerciseService.findById(exerciseId);
+        userExerciseService.deleteAllByExercise(delete_exercise);
+
+        try {
+            exerciseService.deleteExerciseById(exerciseId);
+        }catch (Exception ex){
+            model.addAttribute("message", "there are no exercise with such ID");
+            return "exercises";
+        }
+        return "redirect:/exercises";
+    }
+
+
     @GetMapping("/select_dishes")
     public String selectDishesPage(@AuthenticationPrincipal MyUser user,Model model){
-        MyUser current_user = userService.getUserByUsername(user.getUsername());
-        List<UserDish> userDishes = userDishService.findAllByUserAndDate(current_user, LocalDate.now());
+        List<UserDish> userDishes = userDishService.findAllByUserAndDate(user, LocalDate.now());
 
-        // можно обойтись без этой строчки кода, если в select_dishes.html
-        // принимать объекты класса UserDish, а не User
-//        List<Dish> special_today_dishes = userDishes.stream().map(UserDish::getDish).collect(Collectors.toList());
         List<Dish> dishes = dishesService.findAllWhereUserIsNull();
-        dishes.addAll(dishesService.findAllByUser(current_user));
+        dishes.addAll(dishesService.findAllByUser(user));
 
-        userDishes.forEach(userDish -> {
-            Dish userDish_ = userDish.getDish();
-
-            double times_bigger = userDish.getValue() * 1. * userDish.getPortion().getGramsInPortion() / userDish_.getPortion().getGramsInPortion();
-
-            userDish.setDish(
-                    Dish.builder()
-                                .id(userDish_.getId())
-                                .name(userDish_.getName())
-                                .calories((int) (userDish_.getCalories() * times_bigger))
-                                .carbs((int)(userDish_.getCarbs() * times_bigger))
-                                .fat((int)(userDish_.getFat() * times_bigger))
-                                .protein((int)(userDish_.getProtein()*times_bigger))
-                            .build()
-            );
-        });
+        userDishService.fitUserDishesToPortions(userDishes);
 
         Dish summary = userDishService.getSummary(userDishes);
 
         model.addAttribute("special_dishes", userDishes/*special_today_dishes*/);
         model.addAttribute("select_dish", new UserDishDTO());
         model.addAttribute("dishes", dishes);
+
         model.addAttribute("portions", Portion.values());
         model.addAttribute("mealtimes", Mealtime.values());
+
         model.addAttribute("summary", summary);
         return "select_dishes";
     }
 
     @Transactional
     @PostMapping("/select_dishes")
-    public String selectDishes(@AuthenticationPrincipal MyUser user,@ModelAttribute("select_dish") UserDishDTO userDishDTO, Model model){
-        MyUser current_user = userService.getUserByUsername(user.getUsername());
-
+    public String selectDishes(@AuthenticationPrincipal MyUser user, @ModelAttribute("select_dish") UserDishDTO userDishDTO){
         Dish dish = dishesService.findById(userDishDTO.getDish_id());
 
-        UserDish userDish = userDishService.findByDishAndUser(dish,current_user);
+//        UserDish userDish = userDishService.findByDishAndUser(dish,current_user);
         /*if(userDish != null){
             return "redirect:/select_dishes";
         }else{*/
+        /*userDish_.setUser(current_user);
+        userDish_.setDate(LocalDate.now());
+        userDishService.save(userDish_);*/
         userDishService.save(UserDish.builder()
+                    .id(UserDish.id_st++)
                     .dish(dish)
-                    .user(current_user)
+                    .user(user)
 //                    .grams(userDishDTO.getGrams())
                     .value(userDishDTO.getValue())
                     .portion(userDishDTO.getPortion())
@@ -214,25 +277,170 @@ public class MainController {
 
         return "redirect:/select_dishes";
     }
-    @GetMapping(value = "/select_dishes/delete/{id}")
-    public String deleteSomeSelectedDish(@AuthenticationPrincipal MyUser user, @PathVariable("id") Long dish_id, Model model){
-        Dish delete_dish = dishesService.findById(dish_id);
-        MyUser current_user = userService.getUserByUsername(user.getUsername());
-        userDishService.deleteByDishAndUser(delete_dish, current_user);
+    @GetMapping(value = "/select_dishes/delete/{id}/{dish_id}")
+    public String deleteSomeSelectedDish(@AuthenticationPrincipal MyUser user,
+                                         @PathVariable("id") Long userDishId,
+                                         @PathVariable("dish_id") Long dishId){
+
+        Dish dish = dishesService.findById(dishId);
+
+        userDishService.deleteById(userDishId, user, dish);
         return "redirect:/select_dishes";
     }
 
-    @GetMapping(value = "/select_dishes-history")
-    public String showHistory(@AuthenticationPrincipal MyUser user, Model model){
-//        userDishService.findAllByUser();
-        List<UserDish> userDishes = userDishService.findAllByUser(userService.getUserByUsername(user.getUsername()));
+    @GetMapping("/select_exercises")
+    public String selectExercisesPage(@AuthenticationPrincipal MyUser user, Model model){
+        List<UserExercise> userExercises = userExerciseService.findAllByUserAndDate(user, LocalDate.now());
+
+        // можно обойтись без этой строчки кода, если в select_dishes.html
+        // принимать объекты класса UserDish, а не User
+//        List<Dish> special_today_dishes = userExercises.stream().map(UserDish::getDish).collect(Collectors.toList());
+        List<Exercise> exercises = exerciseService.findAllByUserIsNull();
+        exercises.addAll(exerciseService.findAllByUser(user));
+
+        userExerciseService.fitUserExercisesToMinutes(userExercises);
+
+        Exercise summary = userExerciseService.getSummary(userExercises);
+
+        model.addAttribute("special_exercises", userExercises/*special_today_dishes*/);
+        model.addAttribute("select_exercise", new UserExerciseDto());
+        model.addAttribute("exercises", exercises);
+
+        model.addAttribute("modes", ExerciseMode.values());
+
+        model.addAttribute("summary", summary);
+        return "select_exercises";
+    }
+
+    @Transactional
+    @PostMapping("/select_exercises")
+    public String selectExercises(@AuthenticationPrincipal MyUser user, @ModelAttribute("select_exercise") UserExerciseDto userExerciseDto){
+        Exercise exercise = exerciseService.findById(userExerciseDto.getExercise_id());
+
+        userExerciseService.save(UserExercise.builder()
+                    .id(userExerciseService.biggest_id()+1)
+                    .exercise(exercise)
+                    .user(user)
+                    .exerciseMode(userExerciseDto.getMode())
+                    .minutes(userExerciseDto.getMinutes())
+                    .date(LocalDate.now())
+                .build());
+
+        return "redirect:/select_exercises";
+    }
+
+    @GetMapping(value = "/select_exercises/delete/{id}/{ex_id}")
+    public String deleteSomeSelectedExercise(@AuthenticationPrincipal MyUser user,
+                                             @PathVariable("id") Long userExerciseId,
+                                             @PathVariable("ex_id") Long exId){
+        Exercise delete_exercise = exerciseService.findById(exId);
+        userExerciseService.deleteById(userExerciseId, user, delete_exercise);
+        return "redirect:/select_dishes";
+    }
+
+
+    @GetMapping(value = "/dishes/history")
+    public String showDishesHistory(@AuthenticationPrincipal MyUser user, Model model){
+        List<UserDish> userDishes = userDishService.findAllByUser(user);
+        userDishService.fitUserDishesToPortions(userDishes);
 
         Map<String, List<UserDish>> map = userDishes.stream().collect(Collectors.groupingBy(userDish -> userDish.getDate().toString()));
         TreeMap<String, List<UserDish>> treeMap = new TreeMap<>(Collections.reverseOrder());
         treeMap.putAll(map);
-        model.addAttribute("map", treeMap);
+
+        Map<Dish,List<UserDish>> userDishesWithSummary = new LinkedHashMap<>();
+        treeMap.forEach((key, value) -> userDishesWithSummary.put(
+                userDishService.getSummary(value),
+                value
+        ));
+
+        model.addAttribute("map", userDishesWithSummary);
 
         return "dishes_history";
+    }
+
+    @GetMapping("/exercises/history/")
+    public String showExercisesHistory(@AuthenticationPrincipal MyUser user, Model model,
+                                       @RequestParam(required = false)String date){
+
+        Map<Exercise, List<UserExercise>> userExerciseWIthSummary;
+
+        List<UserExercise> userExercises = userExerciseService.findAllByUser(user);
+        userExerciseService.fitUserExercisesToMinutes(userExercises);
+
+        Map<String, List<UserExercise>> mapEx = userExercises.stream().collect(Collectors.groupingBy(userExercise -> userExercise.getDate().toString()));
+        TreeMap<String, List<UserExercise>> treeMapEx = new TreeMap<>(Collections.reverseOrder());
+        treeMapEx.putAll(mapEx);
+
+        userExerciseWIthSummary = new LinkedHashMap<>();
+        Map<Exercise, List<UserExercise>> finalUserExerciseWIthSummary = userExerciseWIthSummary;
+        treeMapEx.forEach((key, value)-> finalUserExerciseWIthSummary.put(
+                userExerciseService.getSummary(value),
+                value
+        ));
+
+        model.addAttribute("map", finalUserExerciseWIthSummary);
+
+        return "exercises_history";
+    }
+
+
+    @GetMapping("/exercises/history/{date}")
+    public String showExercisesHistoryDate(@AuthenticationPrincipal MyUser user, Model model,
+                                           @PathVariable(name = "date") String date) {
+
+            List<UserExercise> allByUserAndDate = userExerciseService.findAllByUserAndDate(user, LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            if (allByUserAndDate == null || allByUserAndDate.isEmpty()) {
+                model.addAttribute("map", null);
+                return "exercises_history";
+            }
+            userExerciseService.fitUserExercisesToMinutes(allByUserAndDate);
+
+            Exercise summary = userExerciseService.getSummary(allByUserAndDate);
+
+            HashMap<Exercise, List<UserExercise>> map = new HashMap<>();
+            map.put(summary, allByUserAndDate);
+            model.addAttribute("map", map);
+
+
+            return "exercises_history";
+    }
+
+    @GetMapping("/dishes/history/{date}")
+    public String showDishesHistoryDate(@AuthenticationPrincipal MyUser user, Model model,
+                                        @PathVariable(name = "date") String date){
+        List<UserDish> allByUserAndDate = userDishService.findAllByUserAndDate(user, LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        if (allByUserAndDate == null || allByUserAndDate.isEmpty()) {
+            model.addAttribute("map", null);
+            return "dishes_history";
+        }
+        userDishService.fitUserDishesToPortions(allByUserAndDate);
+
+        Dish summary = userDishService.getSummary(allByUserAndDate);
+
+        HashMap<Dish, List<UserDish>> map = new HashMap<>();
+        map.put(summary, allByUserAndDate);
+        model.addAttribute("map", map);
+
+        return "dishes_history";
+    }
+
+    @ModelAttribute("dateDto")
+    public DateDto dateDto(){
+        return new DateDto();
+    }
+
+    @PostMapping("/exercises/history/choose")
+    public String chooseExerciseByDate(@ModelAttribute("dateDto")DateDto localDate,
+                                       @AuthenticationPrincipal MyUser user,
+                                       Model model){
+        return showExercisesHistoryDate(user, model, localDate.getDob().toString());
+    }
+    @PostMapping("/dishes/history/choose")
+    public String chooseDishByDate(@ModelAttribute("dateDto")DateDto localDate,
+                                       @AuthenticationPrincipal MyUser user,
+                                       Model model){
+        return showDishesHistoryDate(user, model, localDate.getDob().toString());
     }
 
     @GetMapping("calculate_calories")

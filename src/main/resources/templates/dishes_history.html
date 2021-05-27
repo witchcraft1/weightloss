@@ -6,44 +6,103 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <title>Users</title>
-    <link th:href="@{public/css/style.css}" th:rel="stylesheet">
+    <link th:href="@{/public/css/style.css}" th:rel="stylesheet">
 </head>
 <body>
-<div class="bg" style="background-image: url('public/images/cool-bg3.jpg')">
+<div class="bg" style="background-image: url('/public/images/cool-bg3.jpg')">
     <div th:replace="/fragments/navbar"></div>
 
     <div id = "all_users">
-        <h2 class="text-danger" th:text="#{title.all.dishes}"></h2>
+        <h2 class="text-danger" th:text="#{title.dishes.history}"></h2>
+    </div>
+
+    <div>
+        <form th:action="@{/dishes/history/choose}" method="post" th:object="${dateDto}">
+            <input th:type="date" name="s" style="background: inherit;border: inherit;color: beige; padding-left: 3%"
+                   th:value="${T(java.time.LocalDate).now()}"
+                   th:max="${T(java.time.LocalDate).now()}"
+                   th:field="${dateDto.dob}" required>
+
+            <button type="submit" class="btn btn-secondary calc" name="register" th:text="#{label.select}">
+                Register
+            </button>
+            <a href="/dishes/history/">
+                <span th:text="#{title.history}"></span>
+            </a>
+        </form>
+
     </div>
     <div id = "content">
 
-        <table class="table table-hover text-white" >
-            <thead>
-                <tr>
-                    <th th:text="#{label.dish.name}"></th>
-                    <th th:text="#{label.select.grams}"></th>
-                    <th th:text="#{label.dish.calories}"></th>
-                </tr>
-            </thead>
-        </table>
-        <table th:each="entry:${map}" class="table table-hover text-white">
-            <caption>
+<!--        <table class="table table-hover text-white" >-->
+<!--            <thead>-->
+<!--                <tr>-->
+<!--                    <th th:text="#{label.date}"></th>-->
+<!--                    <th th:text="#{label.dish.name}"></th>-->
+<!--                    <th th:text="#{label.select.grams}"></th>-->
+<!--                    <th th:text="#{label.dish.calories}"></th>-->
+<!--                </tr>-->
+<!--            </thead>-->
+<!--        </table>-->
+        <table  class="table table-hover text-white">
+<!--            <caption>-->
 <!--                <tr>-->
 <!--                    <td></td>-->
-                <p3><b class="text-primary" th:text="${entry.getKey()}"></b></p3>
+            <thead>
+                <tr>
+                    <th th:text="#{label.date}" class="text-primary"></th>
+                    <th th:text="#{label.dish.name}" class="text-success"></th>
+                    <th th:text="#{label.dish.calories}"></th>
+                    <th th:text="#{label.dish.protein}"></th>
+                    <th th:text="#{label.dish.fat}"></th>
+                    <th th:text="#{label.dish.carbs}"></th>
+                    <th>Value</th>
+                    <th>Portion</th>
+                </tr>
+            </thead>
+
 <!--                    <td></td>-->
 <!--                </tr>-->
-            </caption>
+<!--            </caption>-->
 <!--            <tbody>-->
 <!--                <div th:each="entry:${map}">-->
 <!--                <tr><td><p3><b th:text="${entry.getKey()}"></b></p3></td></tr>-->
 <!--                <div th:each="dishUser:${entry.getValue()}" >-->
-                    <tr th:each="dishUser:${entry.getValue()}">
-                        <td><em class="text-success" th:text="${dishUser.getDish().getName()}"> </em></td>
+                <div th:each="entry:${map}">
+                    <thead>
+                        <tr>
+                            <th>
+                             <p3><b class="text-primary" th:text="${entry.getValue().get(0).date}"></b></p3>
+                            </th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                  <tbody>
+                    <tr th:each="dish:${entry.value}">
+                        <td></td>
+                        <td><em class="text-success" th:text="${dish.getDish().getName()}"> </em></td>
                             <!--                <td><span th:text="${entry.getValue()}"> </span></td>-->
-                        <td><b><span class="text-white" th:text="${dishUser.getValue()}"></span></b></td>
-                        <td><b><span class="text-white" th:text="${dishUser.getDish().getCalories()}"></span></b></td>
+                        <td><b><span class="text-white" th:text="${dish.getDish().getCalories()}"></span></b></td>
+                        <td><span th:text="${dish.dish.protein}">  </span></td>
+                        <td><span th:text="${dish.dish.fat}">  </span></td>
+                        <td><span th:text="${dish.dish.carbs}">  </span></td>
+                        <td><span th:text="${dish.value}">  </span></td>
+                        <td><span th:text="#{${dish.portion.name()}}">  </span></td>
                     </tr>
+                    <tr>
+                        <td>Summary</td>
+                        <td></td>
+                        <td th:text="${entry.key.calories}"></td>
+                        <td th:text="${entry.key.protein}"></td>
+                        <td th:text="${entry.key.fat}"></td>
+                        <td th:text="${entry.key.carbs}"></td>
+                    </tr>
+                  </tbody>
+                </div>
 <!--                    </div>-->
 <!--                </div>-->
 <!--            </tbody>-->

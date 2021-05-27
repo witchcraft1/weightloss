@@ -10,7 +10,7 @@
 <body>
 <nav class="mb-1 navbar navbar-expand-lg navbar-dark bg-dark" th:fragment="navbar">
     <a class="navbar-brand" href="/">
-        <img src="public/images/logo.jpg" width="40" height="40" alt="" style="border-radius: 3px;">
+        <img src="/public/images/logo.jpg" width="40" height="40" alt="" style="border-radius: 3px;">
     </a>
 <!--    <a class="navbar-brand" href="/" th:text="#{label.home}"></a>-->
 
@@ -24,24 +24,33 @@
 <!--                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>-->
 <!--            </li>-->
             <li class="nav-item active">
+                <a class="nav-link text-white" href="/plan" th:text="#{title.plan}"></a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link text-success" href="/add_user_info" th:text="#{title.add.user-info}"></a>
             </li>
             <li class="nav-item">
                 <a  class="nav-link text-primary" href="/dishes"  th:text="#{label.dishes}" ></a>
             </li>
             <li class="nav-item">
+                <a  class="nav-link text-info" href="/exercises"  th:text="#{label.exercises}" ></a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link text-warning" href="/select_dishes" th:text="#{title.add.dishes}"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-info" href="/select_exercises" th:text="#{title.add.exercises}"></a>
             </li>
         </ul>
         <div class="form-inline my-2 my-lg-0">
             <a  href="?lang=en" style="margin-right: 5px;">
-                <img src="public/images/usa-flag.jpg" width="30" height="20" alt="" style="border-radius: 3px;">
+                <img src="/public/images/usa-flag.jpg" width="30" height="20" alt="" style="border-radius: 3px;">
             </a>
             <a  href="?lang=ru"  style="margin-right: 5px;">
-                <img src="public/images/russia-flag.jpg" width="30" height="20" alt="" style="border-radius: 3px;">
+                <img src="/public/images/russia-flag.jpg" width="30" height="20" alt="" style="border-radius: 3px;">
             </a>
             <a  href="?lang=ua"  style="margin-right: 35px;">
-                <img src="public/images/ukraine-flag.jpg" width="30" height="20" alt="" style="border-radius: 3px;">
+                <img src="/public/images/ukraine-flag.jpg" width="30" height="20" alt="" style="border-radius: 3px;">
             </a>
             <a class="btn btn-secondary my-2 my-sm-0" href="/logout" th:text="#{title.logout}"></a>
 <!--            <input class="form-control mr-sm-2" type="text" placeholder="Search">-->

@@ -1,8 +1,7 @@
 package com.rf.springsecurity.repository;
 
-import com.rf.springsecurity.entity.Dish;
+import com.rf.springsecurity.entity.dish.Dish;
 import com.rf.springsecurity.entity.MyUser;
-import com.rf.springsecurity.entity.UserDish;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

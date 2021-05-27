@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Users</title>
+    <link th:href="@{public/css/style.css}" th:rel="stylesheet">
+</head>
+<body>
+<div class="bg" style="background-image: url('public/images/dark-bg12.jpg')">
+    <div th:replace="/fragments/navbar"></div>
+    <div id = "all_users">
+        <h2 th:text="#{title.all.dishes}"></h2>
+    </div>
+    <div id = "content" class="text-white">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th th:text="#{label.dish.name}"></th>
+                <th th:text="#{label.dish.id}"></th>
+                <th th:text="#{label.dish.calories}"></th>
+                <th th:text="#{label.dish.portion}"></th>
+            </tr>
+            </thead>
+
+            <tbody th:if="${exercises}">
+
+            <tr th:each="exercise: ${exercises}">
+                <td><span th:text="${exercise.name}"> </span></td>
+                <td><span th:text="${exercise.id}"> </span></td>
+                <td><span th:text="${exercise.caloriesBurnedPerMinute}"> </span></td>
+                <td th:if="${exercise.exerciseMode != null}"><span th:text="#{${exercise.exerciseMode.name()}}">  </span></td>
+                <td>
+                    <a th:if="${role.equals('ADMIN')}" th:href="@{/exercises/delete/{id}(id=${exercise.id})}"  > Delete </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div id = "special_dishes">
+            <h2 th:text="#{title.special.dishes}"></h2>
+        </div>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th th:text="#{label.dish.name}"></th>
+                <th th:text="#{label.dish.id}"></th>
+                <th th:text="#{label.dish.calories}"></th>
+                <th th:text="#{label.dish.portion}"></th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr th:if="${special_exercises != null}" th:each="special_exercise: ${special_exercises}">
+                <td><span th:text="${special_exercise.name}"> </span></td>
+                <td><span th:text="${special_exercise.id}"> </span></td>
+                <td><span th:text="${special_exercise.caloriesBurnedPerMinute}"> </span></td>
+                <td><span th:text="#{${special_exercise.exerciseMode.name()}}">  </span></td>
+                <td>
+                    <a th:href="@{/exercises/delete/{id}(id=${special_exercise.id})}"  > Delete </a>
+                    <!--                    <form th:action = "@{/dishes/${dish.id}/delete}" th:object="${dish_dto}" method="post">-->
+                    <!--                            <input type="hidden" th:field="${dish_dto.dish_id}">Delete</input>-->
+                    <!--                            <button type="submit"  th:value="${dish.id}" class="btn btn-danger" th:text="#{label.button.delete}" ></button>-->
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                    <div class="panel panel-default" style="margin-top:45px">
+                        <div class="panel-heading" th:text="#{label.dish.add}">
+                        </div>
+
+                        <div class="panel-body">
+                            <form th:action = "@{/exercises}" th:object="${checkBox}" method="post">
+                                <p th:if="${message}" class="alert alert-info" role="alert" th:text="'Exercise already exists'"></p>
+                                <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden" required>
+                                <div class="form-group">
+                                    <label for="name" th:text="#{label.dish.name}"></label>
+                                    <input type="text" class="form-control" id="name" th:placeholder="#{label.dish.name}"
+                                           name="name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="caloriesBurnedPerMinute" th:text="#{label.dish.calories}"></label>
+                                    <input type="number" class="form-control" id="caloriesBurnedPerMinute" th:placeholder="#{label.dish.calories}"
+                                           name="caloriesBurnedPerMinute" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="exerciseMode" th:text="#{label.dish.portion}"></label>
+                                    <select  id="exerciseMode" class="form-control-range" name="exerciseMode">
+                                        <!--                                    <option value="">Select dishes</option>-->
+                                        <option th:each="mode_: ${modes}"  th:value="${mode_.name()}"  th:text="#{${mode_.name()}}" ></option>
+                                    </select>
+                                </div>
+
+                                <div th:if="${role.equals('ADMIN')}" class="form-group">
+                                    <label for="checkbox" th:text="#{label.local.dish}"></label>
+                                    <input type="checkbox" id="checkbox" th:field="*{boolValue}" name="chBox">
+                                </div>
+
+                                <button type="submit" class="btn btn-outline-warning" th:text="#{button.add}"></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

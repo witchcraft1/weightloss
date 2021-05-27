@@ -1,7 +1,7 @@
 package com.rf.springsecurity.dto;
 
-import com.rf.springsecurity.entity.Mealtime;
-import com.rf.springsecurity.entity.Portion;
+import com.rf.springsecurity.entity.dish.Mealtime;
+import com.rf.springsecurity.entity.dish.Portion;
 import lombok.Data;
 
 @Data
