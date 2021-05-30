@@ -37,9 +37,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers( "/public/**").permitAll()/*.hasRole("ADMIN")*/
                     .anyRequest().authenticated()
                 .and()
-                    .formLogin().loginPage("/login").permitAll();
-//                .and()
-//                    .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll();
+                    .formLogin().loginPage("/login").permitAll()
+                .and()
+                    .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll();
 
     }
 

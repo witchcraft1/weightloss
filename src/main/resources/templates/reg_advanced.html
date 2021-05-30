@@ -29,27 +29,32 @@
     <!--input type="text" class="calculator-screen z-depth-1" value="" disabled /-->
     <div class="calculator-screen calculator-header">Registration</div>
 
-    <div  class="btn-group accordion" role="group" aria-label="Basic example" style="display:flex">
+    <div  class="btn-group accordion" role="group" aria-label="Basic example"
+          style="width:100%;
+          display: flex;
+          justify-content: center;
+          font-family: 'Kaushan Script', cursive;"
+          th:if="${regSuccess == null}">
       <button type="button" class="btn btn-secondary section" name="prev">
-        <
+        <h3><</h3>
       </button>
       <button type="button" class="btn btn-secondary section" name="step_1">
-        Step 1
+        <h3>Step 1</h3>
       </button>
       <button type="button" class="btn btn-secondary section" name="step_2">
-        Step 2
+        <h3>Step 2</h3>
       </button>
       <button type="button" class="btn btn-secondary section" name="step_3" style="">
-        Step 3
+        <h3>Step 3</h3>
       </button>
       <button type="button" class="btn btn-secondary section" name="step_4">
-        Step 4
+        <h3>Step 4</h3>
       </button>
       <button type="button" class="btn btn-secondary section" name="step_5">
-        Step 5
+        <h3>Step 5</h3>
       </button>
       <button type="button" class="btn btn-secondary section" name="final_step">
-        Final
+        <h3>Final</h3>
       </button>
       <button type="button" class="btn btn-secondary section" name="next">
         >
@@ -59,7 +64,12 @@
 
       <form th:action="@{/registration}" method="post" th:object="${userDto}">
         <div th:object="${userInfoDto}">
-        <p th:if="${message}" class="alert alert-info" role="alert" th:text="${message}"></p>
+          <p th:if="${message}" class="alert alert-danger" role="alert" th:text="${message}"
+            style="margin: 10px 0px"></p>
+          <div th:if="${regSuccess}">
+            <p  class="alert alert-info" role="alert" th:text="${regSuccess}"></p>
+            <a href="/login" class="btn btn-primary" th:text="#{button.login}"></a>
+          </div>
 <!--        <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">-->
           <div id="step_1" class="collapse" th:name="step_1">
             <div class="card-body">

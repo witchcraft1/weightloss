@@ -40,7 +40,7 @@
                     <td><span th:text="${dish.carbs}">  </span></td>
                     <td th:if="${dish.portion != null}"><span th:text="#{${dish.portion.name()}}">  </span></td>
                     <td>
-                       <a th:if="${role.equals('ADMIN')}" th:href="@{/dishes/delete/{id}(id=${dish.id})}"  > Delete </a>
+                       <a th:if="${role.equals('ADMIN')}" th:href="@{/dishes/delete/{id}(id=${dish.id})}"  th:text="#{label.button.delete}"> </a>
                         <!--                    <form th:action = "@{/dishes/${dish.id}/delete}" th:object="${dish_dto}" method="post">-->
 <!--                            <input type="hidden" th:field="${dish_dto.dish_id}">Delete</input>-->
 <!--                            <button type="submit"  th:value="${dish.id}" class="btn btn-danger" th:text="#{label.button.delete}" ></button>-->

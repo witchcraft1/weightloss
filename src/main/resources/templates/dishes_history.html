@@ -56,8 +56,8 @@
                     <th th:text="#{label.dish.protein}"></th>
                     <th th:text="#{label.dish.fat}"></th>
                     <th th:text="#{label.dish.carbs}"></th>
-                    <th>Value</th>
-                    <th>Portion</th>
+                    <th th:text="#{label.dish.value}">Value</th>
+                    <th th:text="#{label.dish.portion}">Portion</th>
                 </tr>
             </thead>
 
@@ -94,7 +94,7 @@
                         <td><span th:text="#{${dish.portion.name()}}">  </span></td>
                     </tr>
                     <tr>
-                        <td>Summary</td>
+                        <td th:text="#{label.summary}">Summary</td>
                         <td></td>
                         <td th:text="${entry.key.calories}"></td>
                         <td th:text="${entry.key.protein}"></td>

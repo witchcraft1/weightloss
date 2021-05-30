@@ -13,16 +13,16 @@
 <div class="bg" style="background-image: url('public/images/dark-bg12.jpg')">
     <div th:replace="/fragments/navbar"></div>
     <div id = "all_users">
-        <h2 th:text="#{title.all.dishes}"></h2>
+        <h2 th:text="#{title.all.exercises}"></h2>
     </div>
     <div id = "content" class="text-white">
         <table class="table table-hover">
             <thead>
             <tr>
-                <th th:text="#{label.dish.name}"></th>
+                <th th:text="#{label.exercise.name}"></th>
                 <th th:text="#{label.dish.id}"></th>
-                <th th:text="#{label.dish.calories}"></th>
-                <th th:text="#{label.dish.portion}"></th>
+                <th th:text="#{label.calories.per.minute}"></th>
+                <th th:text="#{label.exercise.mode}"></th>
             </tr>
             </thead>
 
@@ -34,21 +34,21 @@
                 <td><span th:text="${exercise.caloriesBurnedPerMinute}"> </span></td>
                 <td th:if="${exercise.exerciseMode != null}"><span th:text="#{${exercise.exerciseMode.name()}}">  </span></td>
                 <td>
-                    <a th:if="${role.equals('ADMIN')}" th:href="@{/exercises/delete/{id}(id=${exercise.id})}"  > Delete </a>
+                    <a th:if="${role.equals('ADMIN')}" th:href="@{/exercises/delete/{id}(id=${exercise.id})}"  th:text="#{label.button.delete}"> Delete </a>
                 </td>
             </tr>
             </tbody>
         </table>
         <div id = "special_dishes">
-            <h2 th:text="#{title.special.dishes}"></h2>
+            <h2 th:text="#{title.special.exercises}"></h2>
         </div>
         <table class="table table-hover">
             <thead>
             <tr>
-                <th th:text="#{label.dish.name}"></th>
+                <th th:text="#{label.exercise.name}"></th>
                 <th th:text="#{label.dish.id}"></th>
-                <th th:text="#{label.dish.calories}"></th>
-                <th th:text="#{label.dish.portion}"></th>
+                <th th:text="#{label.calories.per.minute}"></th>
+                <th th:text="#{label.exercise.mode}"></th>
             </tr>
             </thead>
             <tbody>
@@ -59,10 +59,7 @@
                 <td><span th:text="${special_exercise.caloriesBurnedPerMinute}"> </span></td>
                 <td><span th:text="#{${special_exercise.exerciseMode.name()}}">  </span></td>
                 <td>
-                    <a th:href="@{/exercises/delete/{id}(id=${special_exercise.id})}"  > Delete </a>
-                    <!--                    <form th:action = "@{/dishes/${dish.id}/delete}" th:object="${dish_dto}" method="post">-->
-                    <!--                            <input type="hidden" th:field="${dish_dto.dish_id}">Delete</input>-->
-                    <!--                            <button type="submit"  th:value="${dish.id}" class="btn btn-danger" th:text="#{label.button.delete}" ></button>-->
+                    <a th:href="@{/exercises/delete/{id}(id=${special_exercise.id})}"  th:text="#{label.button.delete}"> Delete </a>
                 </td>
             </tr>
 
@@ -72,7 +69,7 @@
             <div class="row">
                 <div class="col-md-6 col-md-offset-3">
                     <div class="panel panel-default" style="margin-top:45px">
-                        <div class="panel-heading" th:text="#{label.dish.add}">
+                        <div class="panel-heading" th:text="#{label.exercise.add}">
                         </div>
 
                         <div class="panel-body">
@@ -80,20 +77,21 @@
                                 <p th:if="${message}" class="alert alert-info" role="alert" th:text="'Exercise already exists'"></p>
                                 <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden" required>
                                 <div class="form-group">
-                                    <label for="name" th:text="#{label.dish.name}"></label>
-                                    <input type="text" class="form-control" id="name" th:placeholder="#{label.dish.name}"
+                                    <label for="name" th:text="#{label.exercise.name}"></label>
+                                    <input type="text" class="form-control" id="name" th:placeholder="#{label.exercise.name}"
                                            name="name" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="caloriesBurnedPerMinute" th:text="#{label.dish.calories}"></label>
-                                    <input type="number" class="form-control" id="caloriesBurnedPerMinute" th:placeholder="#{label.dish.calories}"
+                                    <label for="caloriesBurnedPerMinute" th:text="#{label.calories.per.minute}"></label>
+                                    <input type="number" class="form-control" id="caloriesBurnedPerMinute" th:placeholder="#{label.calories.per.minute}"
                                            name="caloriesBurnedPerMinute" required>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="exerciseMode" th:text="#{label.dish.portion}"></label>
-                                    <select  id="exerciseMode" class="form-control-range" name="exerciseMode">
+                                    <label for="exerciseMode" th:text="#{label.exercise.mode}"></label>
+                                    <select  id="exerciseMode" class="form-control-range" name="exerciseMode" >
                                         <!--                                    <option value="">Select dishes</option>-->
+                                        <option  th:text="${modes[1]}"  selected="selected" hidden style="color: honeydew"></option>
                                         <option th:each="mode_: ${modes}"  th:value="${mode_.name()}"  th:text="#{${mode_.name()}}" ></option>
                                     </select>
                                 </div>

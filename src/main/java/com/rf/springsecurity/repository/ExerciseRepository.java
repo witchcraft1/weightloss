@@ -15,4 +15,5 @@ public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
     List<Exercise> findAllByUser(MyUser user);
     List<Exercise> findAllByUserIsNull();
     boolean existsExerciseByNameAndUserIsNull(String name);
+    Exercise findByName(String name);
 }

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <link th:href="@{public/css/cool-home.css}" th:rel="stylesheet">
+
+  <!------ Include the above in your HEAD tag ---------->
+</head>
+<body>
+<!-- Team -->
+<div th:replace="/fragments/navbar"></div>
+<section id="team" class="pb-5">
+  <div class="container">
+    <h5 class="section-title h1" th:text="#{daily.calories.budget}"></h5>
+    <div class="row">
+      <!-- Team member -->
+      <div style="width:100%;
+          display: flex;
+          justify-content: center;">
+        <div class="image-flip" >
+          <div class="mainflip flip-0">
+            <div> <!--class="frontside">-->
+              <div class="card">
+                <div class="card-body text-center" th:with="calories_delta=${calories_budget - summary.calories + summary_ex.caloriesBurnedPerMinute}">
+                  <h4 class="section-title h3" th:text="${calories_budget}+' '+#{calories_}"></h4>
+                  <p class="card-text h5" th:text="#{progress}">Progress</p>
+                  <meter title="GB" style="width:100%" min="0" th:low="${calories_budget/1.2}" th:high="${calories_budget - 1}" th:max="${calories_budget}" optimum="100" th:value="${-calories_delta + calories_budget}">-100</meter>
+                  <h4 class="h5" >
+                    <span class="h5" th:text="#{food.calories.consumed}"></span>
+                    <span class="section-title h5" th:text="${summary.calories}"></span>
+                  </h4>
+                  <h4 class="h5" >
+                    <span class="h5" th:text="#{exercise.calories.burned}"></span>
+                    <span class="section-title h5" th:text="${summary_ex.caloriesBurnedPerMinute}"></span>
+                  </h4>
+                  <h4 class="h5" >
+                    <span class="h5" th:text="#{net.calories.so.far.today}"></span>
+                    <span class="section-title h5" th:text="${summary.calories - summary_ex.caloriesBurnedPerMinute}"></span>
+                  </h4>
+                  <h4 class="h5">
+                    <span th:text="#{${calories_delta > 0 ? 'label.can.eat' : 'label.iam'}}"></span>
+                     <span class="section-title h3"><strong th:text="${' ' + T(java.lang.Math).abs(calories_delta)  + ' '}"></strong></span>
+                     <span th:text="#{${calories_delta > 0 ? 'label.more.calories.today' : 'label.calories.bigger.than.budget'}}"></span>
+                  </h4>
+                  <h5 class="h4">
+                    <a href="/dishes-plan">
+                      <span class="section-title h4" th:text="#{recommended.diet}">Your personal exercise plan</span>
+                    </a>
+                  </h5>
+                  <a href="/dishes-plan" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i></a>
+                  <h5 class="h4">
+                    <span class="section-title h4" th:text="#{your.personal.exercise.plan}">Your personal exercise plan</span>
+                    </h5>
+
+                     <a href="/exercises-plan" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i></a>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container" style="margin-top: 30px" >
+    <h5 class="section-title h1" th:text="#{title.selected.dishes}"></h5>
+    <div class="row" style="margin-left:-70px; margin-right: -50px">
+      <!-- Team member -->
+      <div class="col-xs-12 col-sm-6 col-md-6" th:each="mealtime: ${mealtime_calories}" >
+        <div class="image-flip" >
+          <div class="mainflip flip-0">
+            <div class="frontside">
+              <div class="card">
+                <div class="card-body text-center"  >
+                  <p><img class=" img-fluid" th:src="'/public/images/'+${mealtime.key} +'.jpeg'"  alt="card image"></p>
+                  <h4 class="card-title" th:text="#{${mealtime.key}}"></h4>
+                  <h4 class="h5">
+                    <span class="section-title h3" th:text="${mealtime.value}"></span>
+                  </h4>
+                  <h4 class="h5">
+                    <span class="card-text" th:text="#{calories.earned}"></span>
+                  </h4>
+<!--                  <a href="https://www.fiverr.com/share/qb8D02" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i></a>-->
+                </div>
+              </div>
+            </div>
+            <div class="backside">
+              <div class="card">
+                <div class="card-body text-center"> <!--mt4-->
+                  <h4 class="card-title" th:text="#{${mealtime.key}}"></h4>
+
+                  <div>
+                    <table class="table" th:if="${mealtime.value != 0}">
+                      <thead>
+                      <tr>
+                        <th th:text="#{label.dish.name}"></th>
+
+                        <th th:text="#{label.dish.protein}"></th>
+                        <th th:text="#{label.dish.calories}"></th>
+                        <th th:text="#{label.dish.fat}"></th>
+                        <th th:text="#{label.dish.carbs}"></th>
+                        <th th:text="#{label.dish.value}"></th>
+                        <th th:text="#{label.dish.portion}"></th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr th:each="dish: ${special_dishes}" th:if="${dish.mealtime.name().equals(mealtime.key)}">
+                        <td><span th:text="${dish.dish.name}"> </span></td>
+                        <td><span th:text="${dish.dish.protein}">  </span></td>
+                        <td><span th:text="${dish.dish.calories}"> </span></td>
+                        <td><span th:text="${dish.dish.fat}">  </span></td>
+                        <td><span th:text="${dish.dish.carbs}">  </span></td>
+                        <td><span th:text="${dish.value}">  </span></td>
+                        <td><span th:text="#{${dish.portion.name()}}">  </span></td>
+                        <td><a th:href="@{/select_dishes/delete/{id}(id=${dish.dish.id})}"  th:text="#{label.button.delete}"></a></td>
+                      </tr>
+                      </tbody>
+                    </table>
+                    <h4 class="section-title h3" th:if="${mealtime.value == 0}" th:text="#{rec.tip.eat}"></h4>
+                  </div>
+<!--                  <p class="card-text">s is</p>-->
+                  <ul class="list-inline">
+                    <li class="list-inline-item">
+                      <a class="social-icon text-xs-center" target="_blank" href="https://www.fiverr.com/share/qb8D02">
+                        <i class="fa fa-facebook"></i>
+                      </a>
+                    </li>
+                    <li class="list-inline-item">
+                      <a class="social-icon text-xs-center" target="_blank" href="https://www.fiverr.com/share/qb8D02">
+                        <i class="fa fa-twitter"></i>
+                      </a>
+                    </li>
+                    <li class="list-inline-item">
+                      <a class="social-icon text-xs-center" target="_blank" href="https://www.fiverr.com/share/qb8D02">
+                        <i class="fa fa-skype"></i>
+                      </a>
+                    </li>
+                    <li class="list-inline-item">
+                      <a class="social-icon text-xs-center" target="_blank" href="https://www.fiverr.com/share/qb8D02">
+                        <i class="fa fa-google"></i>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container" style="margin-top: 30px">
+    <h5 class="section-title h1" th:text="#{title.selected.exercises}"></h5>
+    <div class="row" style="margin-left: 320px">
+      <div class="col-xs-12 col-sm-6 col-md-7" >
+        <div class="image-flip" >
+          <div class="mainflip flip-0">
+            <div class="frontside">
+              <div class="card">
+                <div class="card-body text-center">
+                  <p><img class=" img-fluid" src="/public/images/ball.jpeg" alt="card image"></p>
+                  <h4 class="card-title" th:text="#{label.exercises}"></h4>
+                  <h4 class="h5">
+                    <span class="section-title h3" th:text="${summary_ex.caloriesBurnedPerMinute}"></span>
+                  </h4>
+                  <h4 class="h5">
+                    <span class="card-text" th:text="#{calories.burned}"></span>
+                  </h4>
+                </div>
+              </div>
+            </div>
+            <div class="backside" >
+              <div class="card">
+                <div class="card-body text-center">
+                  <h4 class="card-title" th:text="#{label.exercises}"></h4>
+                  <div>
+                    <table class="table" th:if="${summary_ex != 0}">
+                      <thead>
+                      <tr>
+                        <th th:text="#{label.exercise.name}"></th>
+
+                        <th th:text="#{label.dish.calories}"></th>
+                        <th th:text="#{label.minutes}"></th>
+                        <th th:text="#{label.exercise.mode}"></th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr th:each="exercise: ${special_exercises}">
+                        <td><span th:text="${exercise.exercise.name}"> </span></td>
+                        <td><span th:text="${exercise.exercise.caloriesBurnedPerMinute}"> </span></td>
+                        <td><span th:text="${exercise.minutes}">  </span></td>
+                        <td><span th:text="#{${exercise.exerciseMode.name()}}">  </span></td>
+                        <td><a th:href="@{/select_exercises/delete/{id}(id=${exercise.exercise.id})}"  th:text="#{label.button.delete}" ></a></td>
+                      </tr>
+                      </tbody>
+                    </table>
+                    <h4 class="section-title h3" th:if="${summary_ex.caloriesBurnedPerMinute == 0}" th:text="#{rec.tip.do}"></h4>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</body>
+<!-- Team -->
+</html>

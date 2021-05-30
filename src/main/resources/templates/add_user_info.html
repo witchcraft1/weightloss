@@ -26,15 +26,15 @@
                                 <table class="table table-hover">
                                     <thead>
                                     <tr class="text-primary">
-                                        <th>Nickname</th>
+                                        <th th:text="#{label.user.nickname}"></th>
                                         <th   th:text="#{label.user.age}"></th>
                                         <th  th:text="#{label.user.height}"></th>
                                         <th   th:text="#{label.user.weight}"></th>
-                                        <th>Goal weight</th>
+                                        <th th:text="#{label.user.goal.weight}"></th>
                                         <th  th:text="#{label.user.lifestyle}"></th>
-                                        <th>Male</th>
-                                        <th>Weight loss per week</th>
-                                        <th>Exercises per week</th>
+                                        <th th:text="#{label.user.male}">Male</th>
+                                        <th th:text="#{label.user.weightloss.per.week}"> Weight loss per week</th>
+                                        <th th:text="#{label.user.exercises.per.week}">Exercises per week</th>
                                         <th>  </th>
                                     </tr>
                                     </thead>
@@ -69,19 +69,19 @@
                                                        name="goalWeight" required min="0">
                                             </td>
                                             <td class="form-group">
-                                                 <span th:text="${current_user?.lifestyle}"></span>
+                                                 <span th:text="#{${current_user?.lifestyle.name()}}"></span>
                                                 <label class="text-danger" for="lifestyle" th:text="#{label.select}"></label>
                                                 <select style="background: none; border: none;" class="form_control" id="lifestyle" name="lifestyle" required>
-                                                    <option  th:text="${current_user?.lifestyle}"  selected="selected" hidden style="color: honeydew"></option>
-                                                    <option   th:each="lifestyle: ${lifestyles}" th:text="${lifestyle}" style="color: honeydew"></option>
+                                                    <option  th:text="#{${current_user?.lifestyle.name()}}"  th:value="${current_user?.lifestyle}" selected="selected" hidden style="color: honeydew"></option>
+                                                    <option   th:each="lifestyle: ${lifestyles}" th:text="#{${lifestyle.name()}}" th:value="${lifestyle}" style="color: honeydew"></option>
                                                 </select>
                                             </td>
                                             <td class="form-group">
-                                                <span th:text="${current_user?.male}"></span>
+                                                <span th:text="#{${current_user?.male.name()}}"></span>
                                                 <label class="text-danger" for="male" th:text="#{label.select}"></label>
                                                 <select style="background: none; border: none;" class="form_control" id="male" name="male" required>
-                                                    <option  th:text="${current_user?.male}"  selected="selected" hidden style="color: honeydew"></option>
-                                                    <option   th:each="male: ${males}" th:text="${male}" style="color: honeydew"></option>
+                                                    <option  th:text="#{${current_user?.male.name()}}"  th:value="${current_user?.male}" selected="selected" hidden style="color: honeydew"></option>
+                                                    <option   th:each="male: ${males}" th:text="#{${male.name()}}" th:value="${male}" style="color: honeydew"></option>
                                                 </select>
                                             </td>
 

@@ -16,27 +16,30 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h1 class="blue_" th:text="#{title.hello.world}"> </h1>
-                    <h1 class="yellow" th:text="#{text.logged.with}"></h1>
-                    <h2 class="pink-red" th:text="${login}"></h2>
-                    <h2 class="pink-red" th:text="${role}"></h2>
+                    <h1 class="blue_" th:text="#{title.hello.world} + ' '+ ${username} + '!'"> </h1>
+<!--                    <h1 class="yellow" th:text="#{text.logged.with}"></h1>-->
+<!--                    <h2 class="pink-red" th:text="${login}"></h2>-->
+<!--                    <h2 class="pink-red" th:text="${role}"></h2>-->
                 </div>
                 <div class="col-md-6 col-md-offset-3 text-white">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h1 class="panel-title">Your personal weight loss plan is ready</h1>
+                            <h1 class="panel-title" th:text="#{your.personal.weightloss.plan}">Your personal weight loss plan is ready</h1>
                         </div>
                         <div class="panel-body">
-                            <p>Daily calorie budget:</p>
+                            <p th:text="#{daily.calories.budget}"></p>
                             <h2 th:text="${plan_dto.dailyCalorieBudget}"></h2>
 
-                            <p>Total weight loss:</p>
-                            <h2 th:text="${plan_dto.totalWeightLoss}"></h2>
+                            <p th:text="#{total.weightloss}"></p>
+                            <h2 th:text="${plan_dto.totalWeightLoss} +' ' + #{label.kilograms}">
+                                <strong th:text="#{label.kilograms}"></strong>
+                            </h2>
 
-                            <p>Weekly weight loss:</p>
-                            <h2 th:text="${plan_dto.weeklyWeightLoss}"></h2>
+                            <p th:text="#{weekly.weightloss}"></p>
+                            <h2 th:text="${plan_dto.weeklyWeightLoss} +' ' + #{label.kilograms}" >
+                            </h2>
 
-                            <p>Goal date:</p>
+                            <p th:text="#{goal.date}"></p>
                             <h2 th:text="${plan_dto.goalDate}"></h2>
                         </div>
                     </div>

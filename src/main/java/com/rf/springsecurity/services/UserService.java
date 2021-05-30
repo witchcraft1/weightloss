@@ -76,15 +76,16 @@ public class UserService implements UserDetailsService {
                                 null : "confirmed password") : "login") : "password";
     }
 
+    private boolean isPresent(Number field){return field != null && field.floatValue() != 0;}
     private String isCompleteUserInfoOrElseGetEmptyField(UserInfoDto userInfoDto){
-        return userInfoDto.getWeight() != 0 ?
-                (userInfoDto.getGoalWeight() != 0 ?
-                        (userInfoDto.getHeight() != 0 ?
+        return isPresent(userInfoDto.getWeight()) ?
+                (isPresent(userInfoDto.getGoalWeight()) ?
+                        (isPresent(userInfoDto.getHeight()) ?
                                 (userInfoDto.getMale() != null ?
                                         (userInfoDto.getDob() != null ?
                                                 (userInfoDto.getLifestyle() != null ?
-                                                        (userInfoDto.getExercisesPerWeek() != 0 ?
-                                                                (userInfoDto.getWeightLossPerWeek() != 0.0 ?
+                                                        (isPresent(userInfoDto.getExercisesPerWeek())?
+                                                                (isPresent(userInfoDto.getWeightLossPerWeek()) ?
                                                                         null : "weight loss per week") : "exercises per week") : "lifestyle") : "date of birth"): "male") : "height") : "goal weight") : "weight";
     }
 

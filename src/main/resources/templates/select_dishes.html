@@ -50,29 +50,31 @@
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
                 <div class="panel panel-default" style="margin-top:45px">
-                    <div class="panel-heading" th:text="#{label.dish.add}">
 
                     </div>
                     <div class="panel-body">
-                    <div th:text="#{label.select.dishes}"></div>
+                    <div th:text="#{label.select.eaten.dish}"></div>
                         <form th:action = "@{/select_dishes}" th:object="${select_dish}" method="post">
                             <!--            <p th:if="${message}" class="alert alert-info" role="alert" th:text="'Dish already exists'"></p>-->
 <!--                            <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">-->
                             <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden" required>
 
                             <div class="form-group">
+                                <label th:text="#{label.dish.name}"></label>
                                 <select  id="dish" th:field="*{dish_id}" name="dish">
 <!--                                    <option value="">Select dishes</option>-->
                                     <option th:each="dish: ${dishes}"  th:value="${dish.id}"  th:text="${dish.name} + ${dish.user != null ? '(own)' :''}"></option>
                                 </select>
                             </div>
                             <div class="form-group">
+                                <label th:text="#{label.dish.portion}"></label>
                                 <select  id="portion" th:field="*{portion}" name="portion">
                                     <!--                                    <option value="">Select dishes</option>-->
                                     <option th:each="portion_: ${portions}"  th:value="${portion_.name()}"  th:text="#{${portion_.name()}}" ></option>
                                 </select>
                             </div>
                             <div class="form-group">
+                                <label th:text="#{label.dish.mealtime}"></label>
                                 <select  id="mealtime" th:field="*{mealtime}" name="mealtime">
                                     <!--                                    <option value="">Select dishes</option>-->
                                     <option th:each="mealtime_: ${mealtimes}"  th:value="${mealtime_.name()}"  th:text="#{${mealtime_.name()}}" ></option>
@@ -95,25 +97,27 @@
     <table class="table table-hover">
         <thead>
         <tr>
+            <th></th>
             <th th:text="#{label.dish.name}"></th>
 
             <th th:text="#{label.dish.protein}"></th>
             <th th:text="#{label.dish.calories}"></th>
             <th th:text="#{label.dish.fat}"></th>
             <th th:text="#{label.dish.carbs}"></th>
-            <th>Value</th>
-            <th>Portion</th>
+            <th th:text="#{label.dish.value}">Value</th>
+            <th th:text="#{label.dish.portion}">Portion</th>
         </tr>
         </thead>
 
         <div th:each="mealtime: ${mealtimes}">
             <thead>
                 <tr>
-                    <th th:text="${mealtime}"></th>
+                    <th th:text="#{${mealtime}}"></th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="dish: ${special_dishes}" th:if="${dish.mealtime.equals(mealtime)}">
+                    <td></td>
                     <td><span th:text="${dish.dish.name}"> </span></td>
                     <td><span th:text="${dish.dish.protein}">  </span></td>
                     <td><span th:text="${dish.dish.calories}"> </span></td>
@@ -121,14 +125,15 @@
                     <td><span th:text="${dish.dish.carbs}">  </span></td>
                     <td><span th:text="${dish.value}">  </span></td>
                     <td><span th:text="#{${dish.portion.name()}}">  </span></td>
-                    <td><a th:href="@{/select_dishes/delete/{id}/{dish_id}(id=${dish.id}, dish_id=${dish.dish.id})}"> Delete </a></td>
+                    <td><a th:href="@{/select_dishes/delete/{id}/{dish_id}(id=${dish.id}, dish_id=${dish.dish.id})}" th:text="#{label.button.delete}"> Delete </a></td>
                 </tr>
             </tbody>
         </div>
 
         <thead>
             <tr>
-                <th>Summary</th>
+                <th th:text="#{label.summary}">Summary</th>
+               <th></th>
                 <th><span th:text="${summary.protein}">  </span></th>
                 <th><span th:text="${summary.calories}"> </span></th>
                 <th><span th:text="${summary.fat}">  </span></th>

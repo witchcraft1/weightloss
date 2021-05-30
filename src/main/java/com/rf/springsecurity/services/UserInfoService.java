@@ -26,7 +26,9 @@ public class UserInfoService {
         this.userInfoRepository = userInfoRepository;
         this.userRepository = userRepository;
     }
-
+    public UserInfo findByUser(MyUser user){
+        return userInfoRepository.findByUser(user);
+    }
     public void saveNewUserInfo (UserInfo userInfo) {
         userInfoRepository.save(userInfo);
     }
@@ -72,6 +74,31 @@ public class UserInfoService {
                       - 5*userInfo.getAge()
                       + (userInfo.getMale() == Male.MALE ? 5: -161))
                       * getLifeStyleCoef(userInfo.getLifestyle()));
+    }
+
+    public int calcCaloriesReduce(UserInfo userInfo){
+        return (int)(calcDailyCalBudget(userInfo) *coeffReduce(userInfo));
+
+//        return (int)(calcDailyCalBudget(userInfo) * coeff2);
+    }
+
+    private double coeffReduce(UserInfo userInfo){
+        double coeff = Math.pow(1.375 / getLifeStyleCoef(userInfo.getLifestyle()), .6);
+
+        double coeff2 = userInfo.getWeightLossPerWeek() / 0.5;
+
+        coeff2*=0.2 * coeff;
+        return coeff2;
+//        return (int)(calcDailyCalBudget(userInfo) * coeff2);
+    }
+
+    public int calcDailyBudgetWhenLooseWeight(UserInfo userInfo){
+        int budgetWithoutLosingWeight = calcDailyCalBudget(userInfo);
+        System.out.println(budgetWithoutLosingWeight);
+
+        double v = budgetWithoutLosingWeight * (1 - coeffReduce(userInfo));
+        System.out.println(v);
+        return (int) v;
     }
 
     public PlanDto getPlan(MyUser user){

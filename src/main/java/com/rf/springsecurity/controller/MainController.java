@@ -29,7 +29,9 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.joining;
 
@@ -66,6 +68,9 @@ public class MainController {
 
         Dish summary = userDishService.getSummary(userDishes);
 
+        Map<String, Integer> map_meal_cal = userDishService.calcCaloriesForEachMealtime(userDishes);
+
+        model.addAttribute("mealtime_calories", map_meal_cal);
         model.addAttribute("special_dishes", userDishes/*special_today_dishes*/);
         model.addAttribute("mealtimes", Mealtime.values());
         model.addAttribute("summary", summary);
@@ -81,15 +86,49 @@ public class MainController {
         model.addAttribute("modes", ExerciseMode.values());
         model.addAttribute("summary_ex", summary_ex);
 
-        model.addAttribute("calories_budget", userInfoService.getPlan(user).getDailyCalorieBudget());
+
+        model.addAttribute("calories_budget",
+                userInfoService.calcDailyBudgetWhenLooseWeight(userInfoService.findByUser(user)));
+        return "home-beauty";
+    }
+
+    @GetMapping("/home")
+    public String getHome2Page(@AuthenticationPrincipal MyUser user, Model model){
+        List<UserDish> userDishes = userDishService.findAllByUserAndDate(user, LocalDate.now());
+
+        userDishService.fitUserDishesToPortions(userDishes);
+
+        Dish summary = userDishService.getSummary(userDishes);
+
+        model.addAttribute("special_dishes", userDishes/*special_today_dishes*/);
+        model.addAttribute("mealtimes", Mealtime.values());
+        model.addAttribute("summary", summary);
+
+
+        List<UserExercise> userExercises = userExerciseService.findAllByUserAndDate(user, LocalDate.now());
+
+        userExerciseService.fitUserExercisesToMinutes(userExercises);
+
+        Exercise summary_ex = userExerciseService.getSummary(userExercises);
+
+        model.addAttribute("special_exercises", userExercises);
+        model.addAttribute("modes", ExerciseMode.values());
+        model.addAttribute("summary_ex", summary_ex);
+
+
+        model.addAttribute("calories_budget",
+                userInfoService.calcDailyBudgetWhenLooseWeight(userInfoService.findByUser(user)));
         return "home";
     }
+
 
     @RequestMapping("/plan")
     public String getMainPage(@AuthenticationPrincipal MyUser user, Model model/*, Principal p*/) {
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //        User user = (User) authentication.getPrincipal();
+
         model.addAttribute("login", user.getUsername());
+        model.addAttribute("username", userInfoService.findByUser(user).getNickname());
         model.addAttribute("role", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(joining(",")));
         model.addAttribute("plan_dto", userInfoService.getPlan(user));
         /*model.addAttribute("daily_calorie_budget", "");
@@ -335,7 +374,7 @@ public class MainController {
                                              @PathVariable("ex_id") Long exId){
         Exercise delete_exercise = exerciseService.findById(exId);
         userExerciseService.deleteById(userExerciseId, user, delete_exercise);
-        return "redirect:/select_dishes";
+        return "redirect:/select_exercises";
     }
 
 
@@ -359,7 +398,7 @@ public class MainController {
         return "dishes_history";
     }
 
-    @GetMapping("/exercises/history/")
+    @GetMapping("/exercises/history")
     public String showExercisesHistory(@AuthenticationPrincipal MyUser user, Model model,
                                        @RequestParam(required = false)String date){
 
@@ -443,6 +482,80 @@ public class MainController {
         return showDishesHistoryDate(user, model, localDate.getDob().toString());
     }
 
+    @GetMapping("/dishes-plan")
+    public String getDishesPlanPage(@AuthenticationPrincipal MyUser user,
+                                    @RequestParam(required = false) String day, Model model){
+        if(day != null && !day.isEmpty()){
+            //if null return REST DAY
+            model.addAttribute("day_", day);
+            Map<Mealtime, List<String>> dayDishes = userDishService.getDishesByDay(Integer.parseInt(day));
+
+            /*if(dayExercises == null){
+                model.addAttribute("exercises", null);
+                model.addAttribute("rest_day", "It's a rest day!");
+                model.addAttribute("days", IntStream.rangeClosed(1,30).boxed().collect(Collectors.toList()));
+                return "dishes-plan";
+            }*/
+//            int minutes = userExerciseService.getExercisePerformMinutes(userInfoService.findByUser(user), dayExercises);
+            model.addAttribute("dishes", dayDishes);
+//            model.addAttribute("minutes", minutes);
+            model.addAttribute("select_exercise2", new UserExerciseDto());
+
+        }
+        else{
+            model.addAttribute("content" , "select.day.to.show.plan");
+        }
+
+        model.addAttribute("days", IntStream.rangeClosed(1,30).boxed().collect(Collectors.toList()));
+
+        return "dishes-plan";
+    }
+
+    @GetMapping("/exercises-plan")
+    public String getExercisePlanPage(@AuthenticationPrincipal MyUser user,
+                                      @RequestParam(required = false) String day, Model model){
+        if(day != null && !day.isEmpty()){
+            //if null return REST DAY
+            model.addAttribute("day_", day);
+            List<Exercise> dayExercises = userExerciseService.getDayExercisesByDay(Integer.parseInt(day));
+            if(dayExercises == null){
+                model.addAttribute("exercises", null);
+                model.addAttribute("rest_day", "rest_day");
+                model.addAttribute("days", IntStream.rangeClosed(1,30).boxed().collect(Collectors.toList()));
+                return "exercises-plan";
+            }
+            int minutes = userExerciseService.getExercisePerformMinutes(userInfoService.findByUser(user), dayExercises);
+            model.addAttribute("exercises", dayExercises);
+            model.addAttribute("minutes", minutes);
+            model.addAttribute("select_exercise2", new UserExerciseDto());
+
+        }
+        else{
+            model.addAttribute("content" , "select.day.to.show.plan");
+        }
+
+        model.addAttribute("days", IntStream.rangeClosed(1,30).boxed().collect(Collectors.toList()));
+        return "exercises-plan";
+    }
+
+    @Transactional
+    @PostMapping("/exercises-plan")
+    public String chooseExerciseFromPlan(@AuthenticationPrincipal MyUser user,
+                                         @RequestParam(required = false) String day,
+                                         @ModelAttribute("select_exercise2") UserExerciseDto userExerciseDto){
+        Exercise exercise = exerciseService.findById(userExerciseDto.getExercise_id());
+
+        userExerciseService.save(UserExercise.builder()
+                .id(userExerciseService.biggest_id()+1)
+                .exercise(exercise)
+                .user(user)
+                .exerciseMode(userExerciseDto.getMode())
+                .minutes(userExerciseDto.getMinutes())
+                .date(LocalDate.now())
+                .build());
+        return "redirect:/exercises-plan?day=" + day;
+    }
+
     @GetMapping("calculate_calories")
     public String calculateCalories(@AuthenticationPrincipal MyUser user,Model model){
         MyUser current_user = userService.getUserByUsername(user.getUsername());
@@ -458,6 +571,12 @@ public class MainController {
             model.addAttribute("calories_to_gain", -values.get(1));
         return "calculate_calories";
     }
+
+    @GetMapping("/rec-tips")
+    public String recTips(){
+        return "recommend-tips";
+    }
+
     @GetMapping("/test")
     public String testCss(Model model){
         return "test";

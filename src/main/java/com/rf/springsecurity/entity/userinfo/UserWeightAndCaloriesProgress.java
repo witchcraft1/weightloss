@@ -28,8 +28,4 @@ public class UserWeightAndCaloriesProgress {
 
     @Column
     private Integer weight;
-
-    public UserWeightAndCaloriesProgress() {
-
-    }
 }

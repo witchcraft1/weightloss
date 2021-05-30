@@ -13,9 +13,9 @@ import java.time.LocalDate;
 @ToString
 public class UserInfoDto {
     private String nick;
-    private int weight;
-    private int goalWeight;
-    private int height;
+    private Integer weight;
+    private Integer goalWeight;
+    private Integer height;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dob;
@@ -23,7 +23,7 @@ public class UserInfoDto {
     private String male;
     private String lifestyle;
 
-    private int exercisesPerWeek;
-    private float weightLossPerWeek;
+    private Integer exercisesPerWeek;
+    private Float weightLossPerWeek;
 
 }
