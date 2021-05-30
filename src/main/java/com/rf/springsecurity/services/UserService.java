@@ -73,7 +73,7 @@ public class UserService implements UserDetailsService {
         return !userDto.getPassword().isEmpty() ?
                 (!userDto.getLogin().isEmpty() ?
                         (!userDto.getConfirmedPassword().isEmpty() ?
-                                null : "confirmed password") : "login") : "password";
+                                null : "підтвердження паролю") : "логін") : "пароль";
     }
 
     private boolean isPresent(Number field){return field != null && field.floatValue() != 0;}
@@ -86,20 +86,20 @@ public class UserService implements UserDetailsService {
                                                 (userInfoDto.getLifestyle() != null ?
                                                         (isPresent(userInfoDto.getExercisesPerWeek())?
                                                                 (isPresent(userInfoDto.getWeightLossPerWeek()) ?
-                                                                        null : "weight loss per week") : "exercises per week") : "lifestyle") : "date of birth"): "male") : "height") : "goal weight") : "weight";
+                                                                        null : "втрата ваги в тиждень") : "кількість вправ в тиждень") : "стиль життя") : "день народження"): "стать") : "зріст") : "цільова вага") : "вага";
     }
 
     private String getMessageIfWrongRange(UserInfoDto userInfoDto){
-        String message = "Parameter  %s: %d is  %s!";
+        String message = "Параметр  %s: %d є %s!";
 
         boolean isBig = false;
 
         if((isBig = userInfoDto.getWeight() > 300) || userInfoDto.getWeight() < 30)
-            return String.format(message, "weight", userInfoDto.getWeight(), isBig ? "big" : "small");
+            return String.format(message, "вага", userInfoDto.getWeight(), (isBig ? "великим" : "малим") + " значенням");
         if((isBig = userInfoDto.getGoalWeight() > 300) || userInfoDto.getGoalWeight() < 30)
-            return String.format(message, "goal weight", userInfoDto.getGoalWeight(), isBig ? "big" : "small");
+            return String.format(message, "цільова вага", userInfoDto.getGoalWeight(), (isBig ? "великим" : "малим") + " значенням");
         if((isBig = userInfoDto.getHeight() > 230) || userInfoDto.getHeight() < 70)
-            return String.format(message, "height", userInfoDto.getHeight(), isBig ? "big" : "small");
+            return String.format(message, "зріст", userInfoDto.getHeight(), (isBig ? "великим" : "малим") + " значенням");
 
         return null;
     }

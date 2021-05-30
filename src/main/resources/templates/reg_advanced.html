@@ -27,7 +27,7 @@
           <div class="panel-body">
 <!--  <div class="calculator card" id="accordionExample" >-->
     <!--input type="text" class="calculator-screen z-depth-1" value="" disabled /-->
-    <div class="calculator-screen calculator-header">Registration</div>
+<!--    <div class="calculator-screen calculator-header">Registration</div>-->
 
     <div  class="btn-group accordion" role="group" aria-label="Basic example"
           style="width:100%;
@@ -39,22 +39,22 @@
         <h3><</h3>
       </button>
       <button type="button" class="btn btn-secondary section" name="step_1">
-        <h3>Step 1</h3>
+        <h3 th:text="#{label.step} + ' 1'">Step 1</h3>
       </button>
       <button type="button" class="btn btn-secondary section" name="step_2">
-        <h3>Step 2</h3>
+        <h3 th:text="#{label.step} + ' 2'">Step 2</h3>
       </button>
       <button type="button" class="btn btn-secondary section" name="step_3" style="">
-        <h3>Step 3</h3>
+        <h3 th:text="#{label.step} + ' 3'">Step 3</h3>
       </button>
       <button type="button" class="btn btn-secondary section" name="step_4">
-        <h3>Step 4</h3>
+        <h3 th:text="#{label.step} + ' 4'">Step 4</h3>
       </button>
       <button type="button" class="btn btn-secondary section" name="step_5">
-        <h3>Step 5</h3>
+        <h3 th:text="#{label.step} + ' 5'">Step 5</h3>
       </button>
       <button type="button" class="btn btn-secondary section" name="final_step">
-        <h3>Final</h3>
+        <h3 th:text="#{label.final}">Final</h3>
       </button>
       <button type="button" class="btn btn-secondary section" name="next">
         >
@@ -73,14 +73,14 @@
 <!--        <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">-->
           <div id="step_1" class="collapse" th:name="step_1">
             <div class="card-body">
-              <label for="currentWeight" text="Current weight in kg" style="color:black">Current weight in kg</label>
-              <input type="number" class="form-control" id="currentWeight" aria-describedby="emailHelp" placeholder="Current weight"
+              <label for="currentWeight" th:text="#{label.current.weight.kg}" style="color:black">Current weight in kg</label>
+              <input type="number" class="form-control" id="currentWeight" aria-describedby="emailHelp" th:placeholder="#{label.current.weight}"
                       th:field="${userInfoDto.weight}" >
 
-              <label for="desireWeight" text="Goal weight" style="color:black;">Goal weight</label>
-              <input type="number" class="form-control" id="desireWeight" aria-describedby="emailHelp" placeholder="Goal weight"
+              <label for="desireWeight" th:text="#{label.user.goal.weight}" style="color:black;">Goal weight</label>
+              <input type="number" class="form-control" id="desireWeight" aria-describedby="emailHelp" th:placeholder="#{label.user.goal.weight}"
                       th:field="${userInfoDto.goalWeight}" >
-              <button type="button" class="btn btn-secondary calc" name="step_1" style="margin-top: 15px">
+              <button th:text="#{next}" type="button" class="btn btn-secondary calc"  name="step_1" style="margin-top: 15px">
                 Next
               </button>
             </div>
@@ -88,10 +88,10 @@
 
           <div id="step_2" class="collapse" th:name="step_2">
             <div class="card-body">
-              <label for="currentHeight" text="Current height in cm" style="color:black;">Current height in cm</label>
-              <input type="number" class="form-control" id="currentHeight" aria-describedby="emailHelp" placeholder="Current height"
+              <label for="currentHeight" th:text="#{label.user.height.cm}" style="color:black;">Current height in cm</label>
+              <input type="number" class="form-control" id="currentHeight" aria-describedby="emailHelp" th:placeholder="#{label.user.height}"
                       th:field="${userInfoDto.height}" >
-              <button type="button" class="btn btn-secondary calc" name="step_2" style="margin-top: 15px">
+              <button type="button" class="btn btn-secondary calc" name="step_2" style="margin-top: 15px" th:text="#{next}">
                 Next
               </button>
             </div>
@@ -99,15 +99,15 @@
 
           <div id="step_3" class="collapse" th:name="step_3">
             <div class="card-body">
-              <label text="Select biological sex" style="display: block; color: black">Select biological sex:</label>
+              <label th:text="#{select.male}" style="display: block; color: black">Select biological sex:</label>
 
               <input type="radio" id="male" name="sex" th:field="${userInfoDto.male}" th:value="MALE" >
-              <label for="male" style="color: black" >Male</label>
+              <label for="male" th:text="#{MALE}" style="color: black" >Male</label>
 
               <input type="radio" id="female" name="sex" th:field="${userInfoDto.male}" th:value="MALE">
-              <label for="female" style="color: black" >Female</label>
+              <label for="female" th:text="#{FEMALE}" style="color: black" >Female</label>
 
-              <button type="button" class="btn btn-secondary calc" name="step_3" style="margin-top: 15px;display: block">
+              <button th:text="#{next}" type="button" class="btn btn-secondary calc" name="step_3" style="margin-top: 15px;display: block">
                 Next
               </button>
             </div>
@@ -115,12 +115,12 @@
 
           <div id="step_4" class="collapse" th:name="step_4">
             <div class="card-body">
-              <label for="dob" text="Select your date of birth" style="color: black">Select your date of birth</label>
+              <label for="dob" th:text="#{select.dob}" style="color: black">Select your date of birth</label>
               <input type="date" id="dob" name="dob"
                      value="2021-05-22"
                      min="1910-01-01" max="2003-12-31" style="display: block; color:black"
                      th:field="${userInfoDto.dob}" >
-              <button type="button" class="btn btn-secondary calc" name="step_4" style="margin-top: 15px">
+              <button th:text="#{next}" type="button" class="btn btn-secondary calc" name="step_4" style="margin-top: 15px">
                 Next
               </button>
             </div>
@@ -130,13 +130,13 @@
           <div class="card-body">
             <ol>
               <li>
-                <p style="color: black">Опишите свой образ жизни</p>
+                <p style="color: black" th:text="#{select.lifestyle}">Опишите свой образ жизни</p>
                 <ul>
                   <li>
                      <input type="radio" id="lifestyle_1"
                            name="lifestyle" value="email"
                             th:field="${userInfoDto.lifestyle}" th:value="PASSIVE">
-                    <label for="lifestyle_1" style="color: black">Сидячий: большую часть дня провожу сидя</label>
+                    <label for="lifestyle_1" style="color: black" th:text="#{select.lifestyle.passive}">Сидячий: большую часть дня провожу сидя</label>
                   </li>
 
 
@@ -144,26 +144,26 @@
                         <input type="radio" id="lifestyle_2"
                                name="lifestyle" value="phone"
                                th:field="${userInfoDto.lifestyle}" th:value="SEDENTARY">
-                        <label for="lifestyle_2" style="color: black">Малоподвижный: большую часть дня провожу на ногах</label>
+                        <label for="lifestyle_2" style="color: black" th:text="#{select.lifestyle.sedentary}">Малоподвижный: большую часть дня провожу на ногах</label>
                   </li>
 
                   <li>
                   <input type="radio" id="lifestyle_3"
                          name="lifestyle" value="mail"
                          th:field="${userInfoDto.lifestyle}" th:value="ACTIVE">
-                  <label for="lifestyle_3" style="color: black">Подвижный: физические нагрузки большую часть дня</label>
+                  <label for="lifestyle_3" style="color: black" th:text="#{select.lifestyle.active}">Подвижный: физические нагрузки большую часть дня</label>
                   </li>
 
                   <li>
                   <input type="radio" id="lifestyle_4"
                          name="lifestyle" value="mail"
                          th:field="${userInfoDto.lifestyle}" th:value="VERY_ACTIVE">
-                  <label for="lifestyle_4" style="color: black">Очень Подвижный: тяжелые физические нагрузки большую часть дня</label>
+                  <label for="lifestyle_4" style="color: black" th:text="#{select.lifestyle.very.active}">Очень Подвижный: тяжелые физические нагрузки большую часть дня</label>
                   </li>
                 </ul>
               </li>
               <li>
-                <p style="color: black"> Сколько раз в неделю планируете выполянть упражнения?</p>
+                <p style="color: black" th:text="#{exercises.per.week.how.many}"> Сколько раз в неделю планируете выполянть упражнения?</p>
                 <select name="exercise_goal" id="exercise_goal"  style="color: black"
                         th:field="${userInfoDto.exercisesPerWeek}">
                   <option th:value="0">0</option>
@@ -175,22 +175,22 @@
                   <option th:value="6">6</option>
                   <option th:value="7">7</option>
                 </select>
-                <span style="color: black">тренировок в неделю</span>
+                <span style="color: black" th:text="#{exercises.per.week}">тренировок в неделю</span>
 
               </li>
               <li>
-                <p style="color: black">Какова ваша цель?</p>
+                <p style="color: black" th:text="#{goal.quest}">Какова ваша цель?</p>
                 <select name="goal_loss_per_week" id="goal_loss_per_week"  style="color: black"
                         th:field="${userInfoDto.weightLossPerWeek}">
-                  <option th:value="1.0"> Сбросить по 1кг в неделю</option>
-                  <option th:value="0.75"> Сбросить по 0.75кг в неделю</option>
-                  <option th:value="0.5"> Сбросить по 0.5кг в неделю</option>
-                  <option th:value="0.25"> Сбросить по 0.25кг в неделю</option>
+                  <option th:value="1.0" th:text="#{burn} + ' 1 ' + #{label.kilograms} +' '+ #{per.week}"> Сбросить по 1кг в неделю</option>
+                  <option th:value="0.75" th:text="#{burn} + ' 0.75 ' + #{label.kilograms} +' '+ #{per.week}"> Сбросить по 0.75кг в неделю</option>
+                  <option th:value="0.5" th:text="#{burn} + ' 0.5' + #{label.kilograms} + ' '+#{per.week}"> Сбросить по 0.5кг в неделю</option>
+                  <option th:value="0.25" th:text="#{burn} + ' 0.25' + #{label.kilograms} +' '+ #{per.week}"> Сбросить по 0.25кг в неделю</option>
                 </select>
               </li>
 
 
-                <button type="button" class="btn btn-secondary calc" name="step_5" style="margin-top: 15px">
+                <button th:text="#{next}" type="button" class="btn btn-secondary calc" name="step_5" style="margin-top: 15px">
                   Next
                 </button>
             </ol>
@@ -199,27 +199,27 @@
 
         <div id="final_step" class="collapse" th:name="final_step">
           <div class="card-body">
-            <label for="first_name" text="First name" style="color: black">First name</label>
-            <input type="text" class="form-control" id="first_name" placeholder="First name"
+            <label for="first_name" th:text="#{label.user.nickname}" style="color: black">First name</label>
+            <input type="text" class="form-control" id="first_name" th:placeholder="#{label.user.nickname}"
                    name="login"  pattern="\w{2,20}"
                    th:field="${userInfoDto.nick}">
 
-            <label for="email" text="email" style="color: black">Email</label>
-            <input type="text" class="form-control" id="email" placeholder="email"
+            <label for="email" th:text="#{label.login}" style="color: black">Email</label>
+            <input type="text" class="form-control" id="email" th:placeholder="#{label.login}"
                    name="login"  pattern="\w+@.{1,10}\..{2,5}"
                    th:field="${userDto.login}">
 
-            <label for="password" text="password" style="color: black">password</label>
-            <input type="text" class="form-control" id="password" placeholder="password"
+            <label for="password" th:text="#{label.password}" style="color: black">password</label>
+            <input type="text" class="form-control" id="password" th:placeholder="#{label.password}"
                    name="login"  pattern="\w{4,}"
                    th:field="${userDto.password}">
 
-            <label for="confirm_pass" text="confirm_pass" style="color: black">confirm password</label>
-            <input type="text" class="form-control" id="confirm_pass" placeholder="confirm pass"
+            <label for="confirm_pass" th:text="#{password.confirm}"  style="color: black">confirm password</label>
+            <input type="text" class="form-control" id="confirm_pass" th:placeholder="#{password.confirmed}"
                    name="login"  pattern="\w{4,}"
                    th:field="${userDto.confirmedPassword}">
 
-            <button type="submit" class="btn btn-secondary calc" name="register" th:text="Register" style="margin-top: 15px">
+            <button  type="submit" class="btn btn-secondary calc" name="register" th:text="#{button.registration}" style="margin-top: 15px">
               Register
             </button>
           </div>

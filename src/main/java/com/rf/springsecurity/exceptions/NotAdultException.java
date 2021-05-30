@@ -12,6 +12,6 @@ public class NotAdultException extends RegFailedException{
 
     @Override
     public String getMessage() {
-        return "You are only " + age + " years old, 18y.o. restriction";
+        return "Вам наразі тільки " + age + " років, реєстрація можлива з 18!";
     }
 }

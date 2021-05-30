@@ -9,6 +9,6 @@ public class EmptyFieldException extends RegFailedException{
 
     @Override
     public String getMessage() {
-        return "Field '" + fieldName +"' is empty, please fill it";
+        return "Поле '" + fieldName +"' пусте, будь-ласка заповність";
     }
 }

@@ -21,6 +21,6 @@ public class ParameterRangeException extends RegFailedException{
 
     @Override
     public String getMessage() {
-        return message != null ? message : "Parameter " + paramName + ": " + value +  " is " + cause;
+        return message != null ? message : "Параметр " + paramName + ": " + value +  " є " + cause;
     }
 }

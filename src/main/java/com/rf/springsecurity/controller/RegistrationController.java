@@ -53,7 +53,7 @@ public class RegistrationController {
             model.addAttribute("message", ex.getMessage());
             return "reg_advanced";
         }
-        model.addAttribute("regSuccess", "Registration is successful!");
+        model.addAttribute("regSuccess", "Реєстрація успішна!");
 //        return "redirect:/login";
         return "reg_advanced";
     }

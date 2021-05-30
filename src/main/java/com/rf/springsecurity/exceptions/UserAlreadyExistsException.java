@@ -8,6 +8,6 @@ public class UserAlreadyExistsException extends RegFailedException{
 
     @Override
     public String getMessage() {
-        return "User with login " + login + " already exists";
+        return "Користувач з логіном '" + login + "' вже існує";
     }
 }
